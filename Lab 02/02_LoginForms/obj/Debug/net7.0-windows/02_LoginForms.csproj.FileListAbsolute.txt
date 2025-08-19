@@ -1,0 +1,17 @@
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\bin\Debug\net7.0-windows\02_LoginForms.exe
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\bin\Debug\net7.0-windows\02_LoginForms.deps.json
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\bin\Debug\net7.0-windows\02_LoginForms.runtimeconfig.json
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\bin\Debug\net7.0-windows\02_LoginForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\bin\Debug\net7.0-windows\02_LoginForms.pdb
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\_02_LoginForms.Form1.resources
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.csproj.GenerateResource.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.GeneratedMSBuildEditorConfig.editorconfig
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.AssemblyInfoInputs.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.AssemblyInfo.cs
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.csproj.CoreCompileInputs.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\refint\02_LoginForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.pdb
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\02_LoginForms.genruntimeconfig.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\ref\02_LoginForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\02_LoginForms\obj\Debug\net7.0-windows\_02_LoginForms.Form2.resources

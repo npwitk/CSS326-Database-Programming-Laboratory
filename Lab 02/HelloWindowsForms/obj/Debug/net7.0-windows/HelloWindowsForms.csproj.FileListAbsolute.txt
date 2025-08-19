@@ -1,0 +1,16 @@
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\bin\Debug\net7.0-windows\HelloWindowsForms.exe
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\bin\Debug\net7.0-windows\HelloWindowsForms.deps.json
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\bin\Debug\net7.0-windows\HelloWindowsForms.runtimeconfig.json
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\bin\Debug\net7.0-windows\HelloWindowsForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\bin\Debug\net7.0-windows\HelloWindowsForms.pdb
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.Form1.resources
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.csproj.GenerateResource.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.GeneratedMSBuildEditorConfig.editorconfig
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.AssemblyInfoInputs.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.AssemblyInfo.cs
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.csproj.CoreCompileInputs.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\refint\HelloWindowsForms.dll
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.pdb
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\HelloWindowsForms.genruntimeconfig.cache
+C:\Mac\Home\Desktop\CSS326-Database-Programming-Laboratory\Lab 02\HelloWindowsForms\obj\Debug\net7.0-windows\ref\HelloWindowsForms.dll
