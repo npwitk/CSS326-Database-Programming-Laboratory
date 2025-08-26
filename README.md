@@ -1,5 +1,3 @@
-Lab 01 - Introduction to DB, Basic C#
-
-Lab 02 - C# and Windows Forms
-
-Lab 03 - Database Management with phpMyAdmin
+- Lab 01 - Introduction to DB, Basic C# (Aug 5)
+- Lab 02 - C# and Windows Forms (Aug 19)
+- Lab 03 - Database Management with phpMyAdmin (Aug 26)
