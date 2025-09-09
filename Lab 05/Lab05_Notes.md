@@ -6,18 +6,18 @@
 
 ## Content Overview
 
-• Recap to last week
-• MySQL server
-• MySQL command prompt
-• View Concept in MySQL
-• Union in MySQL
-• Replace in MySQL
-• Group concatenation MySQL
-• Case in MySQL
-• Join in MySQL
-• Foreign key and its function
-• Project discussion
-• Project group formation
+- Recap to last week
+- MySQL server
+- MySQL command prompt
+- View Concept in MySQL
+- Union in MySQL
+- Replace in MySQL
+- Group concatenation MySQL
+- Case in MySQL
+- Join in MySQL
+- Foreign key and its function
+- Project discussion
+- Project group formation
 
 ---
 
@@ -72,14 +72,14 @@ DROP TABLE employee_data
 ## MySQL Server
 
 ### Versions
-• **MySQL Community Server** (Open Source)
-• **MySQL Enterprise Server** (Proprietary)
+- **MySQL Community Server** (Open Source)
+- **MySQL Enterprise Server** (Proprietary)
 
 ### Advantages
-• **Security:** Firewall (enterprise version), Encryption, User authentication, Online backup
-• **Availability:** Replication (group and data), Cluster CGE (cluster grade edition; share nothing)
-• **Cloud:** Installation on cloud
-• **Access tools:** Command Line utility, GUI (MySQL workbench, PHPMyAdmin)
+- **Security:** Firewall (enterprise version), Encryption, User authentication, Online backup
+- **Availability:** Replication (group and data), Cluster CGE (cluster grade edition; share nothing)
+- **Cloud:** Installation on cloud
+- **Access tools:** Command Line utility, GUI (MySQL workbench, PHPMyAdmin)
 
 ---
 
@@ -88,16 +88,16 @@ DROP TABLE employee_data
 ### Opening the Shell
 
 #### For Windows:
-• Open MAMP & run the servers
-• Open command prompt (cmd)
-• Direct to `cd C:\MAMP\bin\mysql\bin`
-• `mysql -u root –p` & enter
-• Password is 'root'
+- Open MAMP & run the servers
+- Open command prompt (cmd)
+- Direct to `cd C:\MAMP\bin\mysql\bin`
+- `mysql -u root –p` & enter
+- Password is 'root'
 
 #### For Mac:
-• `/Applications/MAMP/Library/bin/mysql –u root –p`
-• `mysql -u root –p` & enter
-• Password is 'root'
+- `/Applications/MAMP/Library/bin/mysql –u root –p`
+- `mysql -u root –p` & enter
+- Password is 'root'
 
 ### Creating Database and Tables
 
@@ -319,10 +319,10 @@ END;
 ## Join in MySQL
 
 ### Join Types
-• **INNER JOIN:** Returns records that have matching values in both tables (Even Join: Default)
-• **LEFT JOIN:** Returns all records from the left table, and the matched records from the right table
-• **RIGHT JOIN:** Returns all records from the right table, and the matched records from the left table
-• **CROSS JOIN:** Returns all records from both tables
+- **INNER JOIN:** Returns records that have matching values in both tables (Even Join: Default)
+- **LEFT JOIN:** Returns all records from the left table, and the matched records from the right table
+- **RIGHT JOIN:** Returns all records from the right table, and the matched records from the left table
+- **CROSS JOIN:** Returns all records from both tables
 
 ### Example Tables
 
@@ -362,9 +362,9 @@ ORDER BY NumberOfOrders DESC;
 ## Foreign Key and its Function
 
 ### Definition
-• A key used to link two tables together
-• A field (or collection of fields) in one table that refers to the PRIMARY KEY or index in another table
-• Table containing the foreign key is called the child table, and the table containing the candidate key is called the referenced or parent table
+- A key used to link two tables together
+- A field (or collection of fields) in one table that refers to the PRIMARY KEY or index in another table
+- Table containing the foreign key is called the child table, and the table containing the candidate key is called the referenced or parent table
 
 ### Example Tables
 
@@ -418,12 +418,12 @@ ALTER TABLE Orders DROP FOREIGN KEY orders_ibfk_1;
 
 ### Project Evaluating Criteria and Requirements
 
-• **Group Size:** 3-4 students per group
-• **Entity-Relationship Diagram:** At least 5 entities & 3 relationship sets (show in Proposal & demonstration)
-• **Frontend:** HTML/CSS/PHP or C# .Net or Any (web or desktop app)
-• **Database:** Use only MySQL server (must have at least 1 stored procedure, 1 trigger)
-• **Security:** Database security implemented (hashing sensitive information)
-• **Pages:** At least 2 app pages
-• **Operations:** All CRUD operations - Create(Insert)/Read(Select)/Update/Delete
-• **Access Control:** Developer, Administrator and user should have different access privileges
-• **Presentation:** Make slides in the proposal and final demonstration of finished project
+- **Group Size:** 3-4 students per group
+- **Entity-Relationship Diagram:** At least 5 entities & 3 relationship sets (show in Proposal & demonstration)
+- **Frontend:** HTML/CSS/PHP or C# .Net or Any (web or desktop app)
+- **Database:** Use only MySQL server (must have at least 1 stored procedure, 1 trigger)
+- **Security:** Database security implemented (hashing sensitive information)
+- **Pages:** At least 2 app pages
+- **Operations:** All CRUD operations - Create(Insert)/Read(Select)/Update/Delete
+- **Access Control:** Developer, Administrator and user should have different access privileges
+- **Presentation:** Make slides in the proposal and final demonstration of finished project
