@@ -1,4 +1,9 @@
 # Lab 5: Data Manipulation using MySQL
+
+**Instructor:** Ashan Kudabalage  
+**Institution:** Sirindhorn International Institute of Technology, Bangkadi  
+**Date:** September 7, 2025
+
 ## Content Overview
 
 • Recap to last week
