@@ -1,0 +1,164 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|e:\\siit ta\\database\\for ta _ instructors exercise in class - studentversion\\signup\\signup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\signup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|e:\\siit ta\\database\\for ta _ instructors exercise in class - studentversion\\signup\\signup\\userpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\userpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\signup\\userpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\userpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\signup\\updatepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\updatepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|e:\\siit ta\\database\\for ta _ instructors exercise in class - studentversion\\signup\\signup\\infodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\infodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|e:\\siit ta\\database\\for ta _ instructors exercise in class - studentversion\\signup\\signup\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|e:\\siit ta\\database\\for ta _ instructors exercise in class - studentversion\\signup\\signup\\info.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA142618-E309-47EE-A70C-FE79D009102D}|Signup\\Signup.csproj|solutionrelative:signup\\info.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "info.cs",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\info.cs",
+              "RelativeDocumentMoniker": "Signup\\info.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\info.cs",
+              "RelativeToolTip": "Signup\\info.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:30:28.236Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{de1fc918-f32e-4dd7-a915-1792a051f26b}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Form1.cs",
+              "RelativeDocumentMoniker": "Signup\\Form1.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Form1.cs",
+              "RelativeToolTip": "Signup\\Form1.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAewBQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:31:08.714Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Form1.cs",
+              "RelativeDocumentMoniker": "Signup\\Form1.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Form1.cs [Design]",
+              "RelativeToolTip": "Signup\\Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:35:31.258Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "userpage.cs",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\userpage.cs",
+              "RelativeDocumentMoniker": "Signup\\userpage.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\userpage.cs",
+              "RelativeToolTip": "Signup\\userpage.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAYwBYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:34:09.802Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "userpage.cs [Design]",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\userpage.cs",
+              "RelativeDocumentMoniker": "Signup\\userpage.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\userpage.cs [Design]",
+              "RelativeToolTip": "Signup\\userpage.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:30:34.736Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "updatepage.cs [Design]",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\updatepage.cs",
+              "RelativeDocumentMoniker": "Signup\\updatepage.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\updatepage.cs [Design]",
+              "RelativeToolTip": "Signup\\updatepage.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:30:33.858Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "infoDAO.cs",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\infoDAO.cs",
+              "RelativeDocumentMoniker": "Signup\\infoDAO.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\infoDAO.cs",
+              "RelativeToolTip": "Signup\\infoDAO.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAAwGsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:30:30.6Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Program.cs",
+              "RelativeDocumentMoniker": "Signup\\Program.cs",
+              "ToolTip": "E:\\SIIT TA\\database\\For TA _ Instructors exercise in class - studentversion\\Signup\\Signup\\Program.cs",
+              "RelativeToolTip": "Signup\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T12:28:29.762Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
