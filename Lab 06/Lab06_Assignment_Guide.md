@@ -1,11 +1,4 @@
 # Lab Assignment 6 - Database Programming using C# & MySQL
-
-**Course:** CSS326 Database Programming Laboratory  
-**Institution:** Sirindhorn International Institute of Technology, Thammasat University  
-**Revised:** 15/Sep/2025  
-
----
-
 ## Assignment Overview
 
 Complete the signup page with login functionality using two related database tables (signup and login) with proper validation and user authentication.
@@ -57,268 +50,567 @@ ALTER TABLE signup ADD CONSTRAINT unique_email UNIQUE (Email);
 ALTER TABLE login ADD CONSTRAINT unique_username UNIQUE (Username);
 ```
 
-### 3. Sample Data
-
-#### Signup Table Sample:
-| ID | First_Name | Last_Name | Sex | BirthDate | Email | Occupation |
-|----|------------|-----------|-----|-----------|-------|------------|
-| 1 | David | Crud | Male | 1992-02-24 | david_crud@gmail.com | Engineer |
-| 2 | Marlon | Blake | Male | 1998-05-13 | marlon_blake@gmail.com | Management Trainee |
-
-#### Login Table Sample:
-| User_ID | Signup_ID | Username | Password |
-|---------|-----------|----------|----------|
-| 1 | 4 | Karin | cha92Eng |
-| 2 | 5 | kevin@here | kevin123 |
-
 ---
 
-## Requirements Implementation
+## C# Implementation
 
-### (a) Validate All Fields
-- **Personal Information:** First name, last name, sex, birth date, email, occupation
-- **Signup Section:** Username, password, confirm password
-- **Error Messages:**
-  - "Please fill all the fields in signup"
-  - "Please fill all the fields in personal information"
-
-### (b) Password Confirmation
-- Check password and confirm password match
-- **Error Message:** "Your passwords do not match"
-
-### (c) Signup Success Message
-- **Success Message:** "Row added to information collector."
-
-### (d) Login or Signup Priority
-- User must fill either login OR signup section
-- **Priority:** Check login section first
-- **Error Message:** "Please fill all the fields in either login or signup section"
-
-### (e) User-Specific Records
-- After successful login/signup, user sees only their own records
-- Implement user session management
-
-### (f) Unique Values
-- Username must be unique in login table
-- Email must be unique in signup table
-- Check before insertion
-
-### (g) Cascade Delete
-- When user deletes their signup record, login record automatically deleted
-- Implemented via `ON DELETE CASCADE`
-
-### (h) User Can Update Only Own Details
-- Users restricted to updating their own information only
-- No access to other users' data
-
----
-
-## C# Implementation Structure
-
-### 1. Data Models
-
-#### Info.cs
+### 1. info.cs (Data Model)
 ```csharp
-public class Info
-{
-    public int ID { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Sex { get; set; }
-    public string BirthDate { get; set; }
-    public string Email { get; set; }
-    public string Occupation { get; set; }
-}
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class Login
+namespace Signup
 {
-    public int UserID { get; set; }
-    public int SignupID { get; set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
+    internal class info
+    {
+        public int ID { get; set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
+        public string Sex { get; set; }
+        public string Bdate { get; set; }
+        public string Email { get; set; }
+        public string Occup { get; set; }
+    }
+
+    internal class login
+    {
+        public int UserID { get; set; }
+        public int SignupID { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
 }
 ```
 
-### 2. Data Access Layer
+### 2. infoDAO.cs (Enhanced Data Access Object)
+```csharp
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
-#### InfoDAO.cs Key Methods
-- `IsUsernameExists(string username)` - Check username uniqueness
-- `IsEmailExists(string email)` - Check email uniqueness
-- `AddSignupRecord(Info info)` - Insert signup record, return ID
-- `AddLoginRecord(Login login)` - Insert login record
-- `VerifyLogin(string username, string password)` - Authenticate user
-- `GetUserRecord(int signupID)` - Get user's own record
-- `UpdateUserRecord(Info info)` - Update user details
-- `DeleteUserRecord(int signupID)` - Delete user (cascade to login)
+namespace Signup
+{
+    internal class infoDAO
+    {
+        string connectionString = "datasource=localhost;port=3306;username=root;password=root;database=test;";
 
-### 3. Form Structure
+        // Check if username already exists
+        internal bool IsUsernameExists(string username)
+        {
+            using (MySqlConnection connect = new MySqlConnection(connectionString))
+            {
+                connect.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM login WHERE Username = @username", connect);
+                cmd.Parameters.AddWithValue("@username", username);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
 
-#### Main Form: SignupLoginForm.cs
+        // Check if email already exists
+        internal bool IsEmailExists(string email)
+        {
+            using (MySqlConnection connect = new MySqlConnection(connectionString))
+            {
+                connect.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM signup WHERE Email = @email", connect);
+                cmd.Parameters.AddWithValue("@email", email);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+
+        // Function to add new record and return the inserted ID
+        internal int addOneRecord(info a1)
+        {
+            MySqlConnection connect = new MySqlConnection(connectionString);
+            connect.Open();
+
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO `signup`(`First_Name`, `Last_Name`, `Sex`, `BirthDate`, `Email`, `Occupation`) VALUES(@fname, @lname, @sex, @birthdate, @email, @occupation)", connect);
+            cmd.Parameters.AddWithValue("@fname", a1.FName);
+            cmd.Parameters.AddWithValue("@lname", a1.LName);
+            cmd.Parameters.AddWithValue("@sex", a1.Sex);
+            cmd.Parameters.AddWithValue("@birthdate", a1.Bdate);
+            cmd.Parameters.AddWithValue("@email", a1.Email);
+            cmd.Parameters.AddWithValue("@occupation", a1.Occup);
+            
+            cmd.ExecuteNonQuery();
+            int newId = (int)cmd.LastInsertedId;
+            connect.Close();
+            return newId;
+        }
+
+        // Add login record
+        internal int addLoginRecord(login loginInfo)
+        {
+            MySqlConnection connect = new MySqlConnection(connectionString);
+            connect.Open();
+
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO `login`(`Signup_ID`, `Username`, `Password`) VALUES(@signupid, @username, @password)", connect);
+            cmd.Parameters.AddWithValue("@signupid", loginInfo.SignupID);
+            cmd.Parameters.AddWithValue("@username", loginInfo.Username);
+            cmd.Parameters.AddWithValue("@password", loginInfo.Password);
+            
+            int newRows = cmd.ExecuteNonQuery();
+            connect.Close();
+            return newRows;
+        }
+
+        // Verify login credentials and return signup ID
+        internal int verifyLogin(string username, string password)
+        {
+            MySqlConnection connect = new MySqlConnection(connectionString);
+            connect.Open();
+
+            MySqlCommand cmd = new MySqlCommand("SELECT Signup_ID FROM login WHERE Username = @username AND Password = @password", connect);
+            cmd.Parameters.AddWithValue("@username", username);
+            cmd.Parameters.AddWithValue("@password", password);
+
+            object result = cmd.ExecuteScalar();
+            connect.Close();
+            return result != null ? Convert.ToInt32(result) : -1;
+        }
+
+        // Get specific user record by ID
+        internal info getUserRecord(int signupID)
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+            conn.Open();
+
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM signup WHERE ID = @id", conn);
+            cmd.Parameters.AddWithValue("@id", signupID);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    info r = new info
+                    {
+                        ID = reader.GetInt32(0),
+                        FName = reader.GetString(1),
+                        LName = reader.GetString(2),
+                        Sex = reader.GetString(3),
+                        Bdate = reader.GetDateTime(4).ToString("yyyy-MM-dd"),
+                        Email = reader.GetString(5),
+                        Occup = reader.GetString(6),
+                    };
+                    conn.Close();
+                    return r;
+                }
+            }
+            conn.Close();
+            return null;
+        }
+
+        // Function to retrieve all information (keep for compatibility)
+        public List<info> getAll()
+        {
+            List<info> returnAll = new List<info>();
+            MySqlConnection conn = new MySqlConnection(connectionString);
+            conn.Open();
+
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM signup", conn);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    info r = new info
+                    {
+                        ID = reader.GetInt32(0),
+                        FName = reader.GetString(1),
+                        LName = reader.GetString(2),
+                        Sex = reader.GetString(3),
+                        Bdate = reader.GetString(4),
+                        Email = reader.GetString(5),
+                        Occup = reader.GetString(6),
+                    };
+                    returnAll.Add(r);
+                }
+            }
+            conn.Close();
+            return returnAll;
+        }
+
+        // Function to update one record
+        internal int updateOneRecord(info a1)
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("UPDATE signup SET First_Name = @fname, Last_Name = @lname, Sex = @sex, BirthDate = @birthdate, Email = @email, Occupation = @occupation WHERE ID = @ID", conn);
+            cmd.Parameters.AddWithValue("@ID", a1.ID);
+            cmd.Parameters.AddWithValue("@fname", a1.FName);
+            cmd.Parameters.AddWithValue("@lname", a1.LName);
+            cmd.Parameters.AddWithValue("@sex", a1.Sex);
+            cmd.Parameters.AddWithValue("@birthdate", a1.Bdate);
+            cmd.Parameters.AddWithValue("@email", a1.Email);
+            cmd.Parameters.AddWithValue("@occupation", a1.Occup);
+            int newRows = cmd.ExecuteNonQuery();
+            conn.Close();
+            return newRows;
+        }
+
+        // Function to delete one record (CASCADE will handle login table)
+        internal int deleteOneRecord(int id_row)
+        {
+            MySqlConnection connect = new MySqlConnection(connectionString);
+            connect.Open();
+            MySqlCommand cmd = new MySqlCommand("DELETE FROM `signup` WHERE `signup`.`ID` = @ID", connect);
+            cmd.Parameters.AddWithValue("@ID", id_row);
+            int newRows = cmd.ExecuteNonQuery();
+            connect.Close();
+            return newRows;
+        }
+    }
+}
+```
+
+### 3. signup.cs (Main Form with Login/Signup)
+```csharp
+using System;
+using System.Windows.Forms;
+
+namespace Signup
+{
+    public partial class signup : Form
+    {
+        public signup()
+        {
+            InitializeComponent();
+        }
+
+        private void submit_Click(object sender, EventArgs e)
+        {
+            infoDAO infor = new infoDAO();
+
+            // Check if user is trying to login (priority to login section)
+            if (!string.IsNullOrWhiteSpace(loginUsernameTextBox.Text) || !string.IsNullOrWhiteSpace(loginPasswordTextBox.Text))
+            {
+                HandleLogin(infor);
+            }
+            // Check if user is trying to signup
+            else if (!string.IsNullOrWhiteSpace(signupUsernameTextBox.Text) || !string.IsNullOrWhiteSpace(signupPasswordTextBox.Text))
+            {
+                HandleSignup(infor);
+            }
+            else
+            {
+                MessageBox.Show("Please fill all the fields in either login or signup section");
+            }
+        }
+
+        private void HandleLogin(infoDAO infor)
+        {
+            // Validate login fields
+            if (string.IsNullOrWhiteSpace(loginUsernameTextBox.Text) || string.IsNullOrWhiteSpace(loginPasswordTextBox.Text))
+            {
+                MessageBox.Show("Please fill all the fields in login section");
+                return;
+            }
+
+            // Verify login credentials
+            int signupID = infor.verifyLogin(loginUsernameTextBox.Text, loginPasswordTextBox.Text);
+            if (signupID != -1)
+            {
+                // Login successful - show user's own record only
+                info userInfo = infor.getUserRecord(signupID);
+                if (userInfo != null)
+                {
+                    this.Hide();
+                    userpage newuserpage = new userpage(userInfo);
+                    newuserpage.ShowDialog();
+                    this.Close();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Invalid username or password");
+            }
+        }
+
+        private void HandleSignup(infoDAO infor)
+        {
+            // Validate personal information fields
+            if (string.IsNullOrWhiteSpace(fname.Text) || string.IsNullOrWhiteSpace(lname.Text) ||
+                string.IsNullOrWhiteSpace(sxCombo.Text) || string.IsNullOrWhiteSpace(email.Text) ||
+                string.IsNullOrWhiteSpace(occupation.Text))
+            {
+                MessageBox.Show("Please fill all the fields in personal information");
+                return;
+            }
+
+            // Validate signup fields
+            if (string.IsNullOrWhiteSpace(signupUsernameTextBox.Text) || string.IsNullOrWhiteSpace(signupPasswordTextBox.Text) ||
+                string.IsNullOrWhiteSpace(confirmPasswordTextBox.Text))
+            {
+                MessageBox.Show("Please fill all the fields in signup");
+                return;
+            }
+
+            // Check password match
+            if (signupPasswordTextBox.Text != confirmPasswordTextBox.Text)
+            {
+                MessageBox.Show("Your passwords do not match");
+                return;
+            }
+
+            // Check for unique username
+            if (infor.IsUsernameExists(signupUsernameTextBox.Text))
+            {
+                MessageBox.Show("Username already exists. Please choose a different username.");
+                return;
+            }
+
+            // Check for unique email
+            if (infor.IsEmailExists(email.Text))
+            {
+                MessageBox.Show("Email already exists. Please use a different email.");
+                return;
+            }
+
+            try
+            {
+                // Create signup record
+                string dateValue = birthDatePick.Value.ToString("yyyy-MM-dd");
+                info a1 = new info()
+                {
+                    FName = fname.Text,
+                    LName = lname.Text,
+                    Sex = sxCombo.Text,
+                    Bdate = dateValue,
+                    Email = email.Text,
+                    Occup = occupation.Text,
+                };
+
+                int signupID = infor.addOneRecord(a1);
+
+                // Create login record
+                login newLogin = new login()
+                {
+                    SignupID = signupID,
+                    Username = signupUsernameTextBox.Text,
+                    Password = signupPasswordTextBox.Text
+                };
+
+                infor.addLoginRecord(newLogin);
+
+                MessageBox.Show("Row added to information collector.");
+
+                // Show user's own record
+                a1.ID = signupID;
+                this.Hide();
+                userpage newuserpage = new userpage(a1);
+                newuserpage.ShowDialog();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error creating account: " + ex.Message);
+            }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+        }
+    }
+}
+```
+
+### 4. userpage.cs (Updated for Single User View)
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace Signup
+{
+    public partial class userpage : Form
+    {
+        private info currentUser;
+        private infoDAO infor;
+
+        // Constructor for single user (from assignment requirements)
+        public userpage(info user)
+        {
+            InitializeComponent();
+            currentUser = user;
+            infor = new infoDAO();
+            LoadUserData();
+        }
+
+        // Keep old constructor for compatibility
+        public userpage(List<info> userList)
+        {
+            InitializeComponent();
+            infor = new infoDAO();
+            if (userList != null && userList.Count > 0)
+            {
+                currentUser = userList[0];
+                LoadUserData();
+            }
+        }
+
+        private void LoadUserData()
+        {
+            // Create a list with only the current user's data
+            List<info> userList = new List<info> { currentUser };
+            
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.DataSource = userList;
+            userdataGridView.DataSource = bindingSource;
+        }
+
+        private void update_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            updatepage newupdatepage = new updatepage(currentUser);
+            newupdatepage.ShowDialog();
+            
+            // Refresh data after update
+            currentUser = infor.getUserRecord(currentUser.ID);
+            LoadUserData();
+            this.Show();
+        }
+
+        private void delete_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to delete your account?", 
+                "Confirm Delete", MessageBoxButtons.YesNo);
+            
+            if (result == DialogResult.Yes)
+            {
+                infor.deleteOneRecord(currentUser.ID);
+                MessageBox.Show("Your account has been deleted.");
+                this.Close();
+            }
+        }
+
+        private void userdataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Only allow selection of the user's own record
+            if (e.RowIndex >= 0)
+            {
+                DataGridView dataGridView = (DataGridView)sender;
+                int selectedID = Convert.ToInt32(dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                
+                // Ensure user can only interact with their own record
+                if (selectedID != currentUser.ID)
+                {
+                    MessageBox.Show("You can only modify your own record.");
+                    return;
+                }
+            }
+        }
+    }
+}
+```
+
+### 5. updatepage.cs (Updated for Single User)
+```csharp
+using System;
+using System.Windows.Forms;
+
+namespace Signup
+{
+    public partial class updatepage : Form
+    {
+        private info userToUpdate;
+        private infoDAO infor;
+
+        public updatepage(info user)
+        {
+            InitializeComponent();
+            userToUpdate = user;
+            infor = new infoDAO();
+            LoadUserData();
+        }
+
+        private void LoadUserData()
+        {
+            fname.Text = userToUpdate.FName;
+            lname.Text = userToUpdate.LName;
+            sxCombo.Text = userToUpdate.Sex;
+            birthDatePick.Value = DateTime.Parse(userToUpdate.Bdate);
+            email.Text = userToUpdate.Email;
+            occupation.Text = userToUpdate.Occup;
+        }
+
+        private void submit_Click(object sender, EventArgs e)
+        {
+            // Validate all fields
+            if (string.IsNullOrWhiteSpace(fname.Text) || string.IsNullOrWhiteSpace(lname.Text) ||
+                string.IsNullOrWhiteSpace(sxCombo.Text) || string.IsNullOrWhiteSpace(email.Text) ||
+                string.IsNullOrWhiteSpace(occupation.Text))
+            {
+                MessageBox.Show("Please fill all the fields");
+                return;
+            }
+
+            // Check if email is unique (excluding current user's email)
+            if (email.Text != userToUpdate.Email && infor.IsEmailExists(email.Text))
+            {
+                MessageBox.Show("Email already exists. Please use a different email.");
+                return;
+            }
+
+            try
+            {
+                string dateValue = birthDatePick.Value.ToString("yyyy-MM-dd");
+                info updatedUser = new info()
+                {
+                    ID = userToUpdate.ID,
+                    FName = fname.Text,
+                    LName = lname.Text,
+                    Sex = sxCombo.Text,
+                    Bdate = dateValue,
+                    Email = email.Text,
+                    Occup = occupation.Text,
+                };
+
+                int result = infor.updateOneRecord(updatedUser);
+                if (result > 0)
+                {
+                    MessageBox.Show("Profile updated successfully!");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Update failed. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating profile: " + ex.Message);
+            }
+        }
+    }
+}
+```
+
+---
+
+## Form Design Requirements
+
+### Main Signup Form Controls:
 - **Personal Information Section:**
-  - First Name (TextBox)
-  - Last Name (TextBox)
-  - Sex (ComboBox)
-  - Birth Date (DateTimePicker)
-  - Email (TextBox)
-  - Occupation (TextBox)
+  - `fname` (TextBox) - First Name
+  - `lname` (TextBox) - Last Name  
+  - `sxCombo` (ComboBox) - Sex
+  - `birthDatePick` (DateTimePicker) - Birth Date
+  - `email` (TextBox) - Email
+  - `occupation` (TextBox) - Occupation
 
 - **Login Section:**
-  - Username (TextBox)
-  - Password (TextBox)
+  - `loginUsernameTextBox` (TextBox) - Username
+  - `loginPasswordTextBox` (TextBox) - Password
 
 - **Signup Section:**
-  - Username (TextBox)
-  - Password (TextBox)
-  - Confirm Password (TextBox)
+  - `signupUsernameTextBox` (TextBox) - Username
+  - `signupPasswordTextBox` (TextBox) - Password
+  - `confirmPasswordTextBox` (TextBox) - Confirm Password
 
-- **Submit Button** - Handles both login and signup logic
-
-#### UserPage.cs
-- Display user's own record in DataGridView
-- Update Button - Opens UpdatePage
-- Delete Button - Deletes user account with confirmation
-
-#### UpdatePage.cs
-- Pre-filled form with user's current data
-- Validation for all fields
-- Save changes to database
-
----
-
-## Validation Logic Flow
-
-### 1. Submit Button Logic
-```
-1. Check if Login fields are filled
-   → If yes: Handle Login Process
-   → If no: Check Signup fields
-
-2. Check if Signup fields are filled
-   → If yes: Handle Signup Process
-   → If no: Show error "Please fill either login or signup section"
-```
-
-### 2. Login Process
-```
-1. Validate login fields are not empty
-2. Verify credentials against database
-3. If valid: Get user record and show UserPage
-4. If invalid: Show error message
-```
-
-### 3. Signup Process
-```
-1. Validate personal information fields
-2. Validate signup fields
-3. Check password confirmation match
-4. Check username uniqueness
-5. Check email uniqueness
-6. Insert signup record → Get ID
-7. Insert login record with signup ID
-8. Show success message
-9. Show UserPage with user's record
-```
-
----
-
-## Security Considerations
-
-### 1. SQL Injection Prevention
-- Use parameterized queries for all database operations
-- Never concatenate user input directly into SQL strings
-
-### 2. Data Validation
-- Client-side validation for user experience
-- Server-side validation for security
-- Sanitize all input data
-
-### 3. Password Security
-- Consider password hashing (not required for assignment but recommended)
-- Minimum password requirements
-
----
-
-## Error Handling
-
-### Database Connection Issues
-```csharp
-try
-{
-    // Database operations
-}
-catch (MySqlException ex)
-{
-    MessageBox.Show("Database error: " + ex.Message);
-}
-catch (Exception ex)
-{
-    MessageBox.Show("An error occurred: " + ex.Message);
-}
-```
-
-### Common Error Scenarios
-- Database connection failure
-- Duplicate username/email
-- Invalid login credentials
-- Missing required fields
-- Password mismatch
-
----
-
-## Testing Checklist
-
-### Functional Tests
-- [ ] All validation messages display correctly
-- [ ] Unique constraints work (username/email)
-- [ ] Password confirmation works
-- [ ] Login authentication works
-- [ ] Users see only their own records
-- [ ] Update functionality works
-- [ ] Delete cascade works properly
-- [ ] Form navigation works correctly
-
-### Edge Cases
-- [ ] Empty field submissions
-- [ ] Special characters in inputs
-- [ ] Maximum length field inputs
-- [ ] Duplicate registration attempts
-- [ ] Database connection interruption
-
----
-
-## Development Tips
-
-### 1. Connection String
-```csharp
-string connectionString = "datasource=localhost;port=3306;username=root;password=root;database=test;";
-```
-
-### 2. NuGet Package Required
-- Install `MySql.Data` package in Visual Studio
-
-### 3. Form Design
-- Use descriptive control names (e.g., `firstNameTextBox`, `loginUsernameTextBox`)
-- Group related controls using GroupBox or Panel
-- Implement proper tab order for accessibility
-
-### 4. Code Organization
-- Separate data models from UI logic
-- Use proper exception handling
-- Implement using statements for database connections
-- Follow naming conventions
-
----
-
-## Submission Requirements
-
-### Deliverables
-1. **Database Script** - SQL commands for table creation and constraints
-2. **C# Source Code** - All form files and classes
-3. **Documentation** - Brief explanation of implementation choices
-4. **Test Results** - Screenshots or description of testing performed
-
-### Code Quality
-- Proper variable naming
-- Appropriate comments
-- Error handling implementation
-- Clean, readable code structure
+- **Submit Button** - Handles both login and signup
