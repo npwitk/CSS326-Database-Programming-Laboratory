@@ -210,7 +210,6 @@
             Margin = new Padding(5, 5, 5, 5);
             Name = "updatepage";
             Text = "Update page";
-            Load += updatepage_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);

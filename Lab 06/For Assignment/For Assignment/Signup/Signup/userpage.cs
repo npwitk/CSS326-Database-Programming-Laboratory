@@ -13,62 +13,82 @@ using MySql.Data.MySqlClient;
 
 namespace Signup
 {
-
     public partial class userpage : Form
     {
-        public int rowClicked;
-        public int id_row;
-        BindingSource infobindingSource = new BindingSource();
+        private info currentUser;
+        private infoDAO infor;
 
-        // Create a list of info object
-        //private List<info> result;
-
-        public userpage()
+        // Constructor for single user (from assignment requirements)
+        public userpage(info user)
         {
             InitializeComponent();
+            currentUser = user;
+            infor = new infoDAO();
+            LoadUserData();
         }
-        public userpage(object v)
+
+        // Keep old constructor for compatibility
+        public userpage(List<info> userList)
         {
             InitializeComponent();
-            V = v;
-        }
-        public object V { get; set; }
-        private void userpage_Load(object sender, EventArgs e)
-        {
-            infobindingSource.DataSource = V;
-            userdataGridView.DataSource = infobindingSource;
+            infor = new infoDAO();
+            if (userList != null && userList.Count > 0)
+            {
+                currentUser = userList[0];
+                LoadUserData();
+            }
         }
 
-        private void userdataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void LoadUserData()
         {
+            // Create a list with only the current user's data
+            List<info> userList = new List<info> { currentUser };
 
-            DataGridView dataGridView = (DataGridView)sender;
-            rowClicked = dataGridView.CurrentRow.Index;
-            id_row = Int32.Parse(dataGridView.Rows[rowClicked].Cells[0].Value.ToString());
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.DataSource = userList;
+            userdataGridView.DataSource = bindingSource;
         }
 
         private void update_Click(object sender, EventArgs e)
         {
-            infoDAO infor = new infoDAO();
             this.Hide();
-            updatepage newupdatepage = new updatepage(id_row);
-
+            updatepage newupdatepage = new updatepage(currentUser);
             newupdatepage.ShowDialog();
 
+            // Refresh data after update
+            currentUser = infor.getUserRecord(currentUser.ID);
+            LoadUserData();
+            this.Show();
         }
 
         private void delete_Click(object sender, EventArgs e)
         {
-            infoDAO infor = new infoDAO();
-            int result = infor.deleteOneRecord(id_row);
-            this.Hide();
-            userpage newuserpage = new userpage(infor.getAll());
-            newuserpage.ShowDialog();
+            DialogResult result = MessageBox.Show("Are you sure you want to delete your account?",
+                "Confirm Delete", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
+            {
+                infor.deleteOneRecord(currentUser.ID);
+                MessageBox.Show("Your account has been deleted.");
+                this.Close();
+            }
         }
 
-        private void userdataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void userdataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Only allow selection of the user's own record
+            if (e.RowIndex >= 0)
+            {
+                DataGridView dataGridView = (DataGridView)sender;
+                int selectedID = Convert.ToInt32(dataGridView.Rows[e.RowIndex].Cells[0].Value);
 
+                // Ensure user can only interact with their own record
+                if (selectedID != currentUser.ID)
+                {
+                    MessageBox.Show("You can only modify your own record.");
+                    return;
+                }
+            }
         }
     }
 }

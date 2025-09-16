@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Signup
 {
-    internal class info
+    public class info
     {
         public int ID { set; get; }
         public string? FName { set; get; }
@@ -16,5 +16,13 @@ namespace Signup
         public string? Email { set; get; }
         public string? Occup { set; get; }
 
+    }
+
+    public class login
+    {
+        public int UserID { get; set; }
+        public int SignupID { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

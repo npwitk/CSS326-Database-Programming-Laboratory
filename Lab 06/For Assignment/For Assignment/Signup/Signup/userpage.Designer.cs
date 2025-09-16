@@ -45,7 +45,6 @@
             userdataGridView.Size = new Size(1700, 376);
             userdataGridView.TabIndex = 0;
             userdataGridView.CellClick += userdataGridView_CellClick;
-            userdataGridView.CellContentClick += userdataGridView_CellContentClick;
             // 
             // update
             // 
@@ -84,7 +83,6 @@
             Margin = new Padding(5, 5, 5, 5);
             Name = "userpage";
             Text = "User page";
-            Load += userpage_Load;
             ((System.ComponentModel.ISupportInitialize)userdataGridView).EndInit();
             ResumeLayout(false);
         }
