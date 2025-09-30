@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mEQjD5KwNNClkFGGDfi4HxLxh+DP7vxMZFRMfBFjmb2Gf6/McEsF1/bf97/Fng19t9xyBPWIv6YReYp9KTFbkA==",
+  "dgSpecHash": "WLcZTeCEza1+a77HTzVFnFdcLiDXg/30aLJ0wHf/i0e2+OXv4iY/gPHUBjF6mKtmJC6yaqF5JXT5Wn6zuPv3Eg==",
   "success": true,
-  "projectFilePath": "C:\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
+  "projectFilePath": "\\\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ictlab\\.nuget\\packages\\google.protobuf\\3.21.9\\google.protobuf.3.21.9.nupkg.sha512",
     "C:\\Users\\ictlab\\.nuget\\packages\\k4os.compression.lz4\\1.3.5\\k4os.compression.lz4.1.3.5.nupkg.sha512",

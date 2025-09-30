@@ -1791,11 +1791,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
+      "projectUniqueName": "\\\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
       "projectName": "Signup",
-      "projectPath": "C:\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
+      "projectPath": "\\\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\Signup.csproj",
       "packagesPath": "C:\\Users\\ictlab\\.nuget\\packages\\",
-      "outputPath": "C:\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\obj\\",
+      "outputPath": "\\\\Mac\\Home\\Desktop\\CSS326-Database-Programming-Laboratory\\Lab 06\\For Assignment\\For Assignment\\Signup\\Signup\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
