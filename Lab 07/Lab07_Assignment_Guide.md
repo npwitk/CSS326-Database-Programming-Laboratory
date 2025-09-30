@@ -1,4 +1,4 @@
-# Laboratory Assignment 7 - Store Procedures, Functions & Triggers
+# Lab Assignment 7 - Store Procedures, Functions & Triggers
 ## Database Setup
 
 ### Step 1: Import the Bank Database
