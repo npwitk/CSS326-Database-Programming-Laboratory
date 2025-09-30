@@ -1,13 +1,6 @@
 # Lab 7: Stored Procedures, Functions & Triggers
-## Table of Contents
 
-1. [Built-in Functions in MySQL](#built-in-functions)
-2. [User-Defined Functions](#user-defined-functions)
-3. [Stored Procedures](#stored-procedures)
-4. [Triggers in MySQL](#triggers)
----
-
-## Built-in Functions in MySQL {#built-in-functions}
+## Built-in Functions in MySQL
 ### Mathematical Functions
 
 ```sql
@@ -90,7 +83,7 @@ SELECT CHARSET('ZetCode'), COLLATION('ZetCode');
 
 ---
 
-## User-Defined Functions {#user-defined-functions}
+## User-Defined Functions
 
 A stored function is a stored program that returns a single value, useful for encapsulating common formulas or business rules that are reusable among SQL statements.
 
@@ -146,7 +139,7 @@ DROP FUNCTION CustomerLevel;
 
 ---
 
-## Stored Procedures {#stored-procedures}
+## Stored Procedures
 
 A stored procedure is a method to encapsulate repetitive tasks in the database.
 
@@ -438,7 +431,7 @@ SELECT @p_cust;
 
 ---
 
-## Triggers in MySQL {#triggers}
+## Triggers in MySQL
 
 A trigger is a special type of stored procedure that is called automatically when a data modification occurs (INSERT, UPDATE, or DELETE).
 
