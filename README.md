@@ -3,3 +3,6 @@
 - Lab 03 - Database Management with phpMyAdmin (Aug 26)
 - Lab 04 - Database Management with MySQL (Sep 2)
 - Lab 05 - Data Manipulation using MySQL (Sep 9)
+- Lab 06 - Database Programming using C$ & MySQL (Sep 16)
+- Midterm
+- Lab 07 - Store Procedure, Functions & Triggers (Sep 30)
