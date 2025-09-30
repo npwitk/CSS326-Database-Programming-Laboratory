@@ -2,9 +2,6 @@
 ## Assignment Overview
 
 Complete the signup page with login functionality using two related database tables (signup and login) with proper validation and user authentication.
-
-**Points:** 10 total (8 points for requirements a-h, 2 points for database design)
-
 ---
 
 ## Database Setup
@@ -334,7 +331,7 @@ namespace Signup
 
         private void HandleSignup(infoDAO infor)
         {
-            // Validate personal information fields
+            // Validate personal information fields (REQUIREMENT A)
             if (string.IsNullOrWhiteSpace(fname.Text) || string.IsNullOrWhiteSpace(lname.Text) ||
                 string.IsNullOrWhiteSpace(sxCombo.Text) || string.IsNullOrWhiteSpace(email.Text) ||
                 string.IsNullOrWhiteSpace(occupation.Text))
@@ -343,7 +340,7 @@ namespace Signup
                 return;
             }
 
-            // Validate signup fields
+            // Validate signup fields (REQUIREMENT A)
             if (string.IsNullOrWhiteSpace(signupUsernameTextBox.Text) || string.IsNullOrWhiteSpace(signupPasswordTextBox.Text) ||
                 string.IsNullOrWhiteSpace(confirmPasswordTextBox.Text))
             {
@@ -351,11 +348,11 @@ namespace Signup
                 return;
             }
 
-            // Check password match
+            // Check password match (REQUIREMENT B) - MUST RETURN IF NOT MATCHING
             if (signupPasswordTextBox.Text != confirmPasswordTextBox.Text)
             {
                 MessageBox.Show("Your passwords do not match");
-                return;
+                return; // This STOPS the signup process
             }
 
             // Check for unique username
