@@ -1,397 +1,637 @@
 # Lab Assignment 8 - Database Security
 
-## Part 1: Define User Accounts (2 points)
+## STEP 0: Import the Database
 
-### Step 1: Create Users with Different Security Levels
+```bash
+# In MySQL Shell or Terminal
+mysql -u root -p
 
-```sql
--- Create Admin user (Full privileges)
-CREATE USER 'bank_admin'@'localhost' IDENTIFIED BY 'Admin@123';
+# Create the BANK database if it doesn't exist
+CREATE DATABASE IF NOT EXISTS BANK;
 
--- Create Staff user (Limited privileges)
-CREATE USER 'bank_staff'@'localhost' IDENTIFIED BY 'Staff@123';
+# Exit and import the SQL file
+exit
 
--- Create Customer user (Read-only privileges)
-CREATE USER 'bank_customer'@'localhost' IDENTIFIED BY 'Customer@123';
+# Import the Bank.sql file
+mysql -u root -p BANK < Bank.sql
+
+# Or in phpMyAdmin: Import > Choose Bank.sql file > Go
 ```
 
-### Step 2: Grant Privileges Based on Security Levels
+### Verify the Import
 
 ```sql
--- ADMIN: Full control over BANK database
-GRANT ALL PRIVILEGES ON BANK.* TO 'bank_admin'@'localhost';
+-- Login to MySQL
+mysql -u root -p
 
--- STAFF: Can SELECT, INSERT, UPDATE on both tables, DELETE only on transaction
-GRANT SELECT, INSERT, UPDATE ON BANK.account TO 'bank_staff'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.transaction TO 'bank_staff'@'localhost';
+-- Use the database
+USE BANK;
 
--- CUSTOMER: Read-only access to their own account information (via view)
-GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+-- Check tables
+SHOW TABLES;
 
--- Apply the privilege changes
-FLUSH PRIVILEGES;
-```
+-- Check account table structure
+DESCRIBE account;
 
-### Step 3: Verify Users Created
+-- Check transaction table structure  
+DESCRIBE transaction;
 
-```sql
--- Check users
-SELECT User, Host FROM mysql.user WHERE User LIKE 'bank_%';
-
--- Check privileges for each user
-SHOW GRANTS FOR 'bank_admin'@'localhost';
-SHOW GRANTS FOR 'bank_staff'@'localhost';
-SHOW GRANTS FOR 'bank_customer'@'localhost';
+-- View sample data
+SELECT * FROM account;
+SELECT * FROM transaction;
 ```
 
 ---
 
-## Part 2: Protect Sensitive Data (2 points)
+## PART 1: Define User Accounts (2 points)
 
-### Identify Sensitive Data:
-1. **creditLimit** - Financial information
-2. **bal** (balance) - Financial information
-3. **amount** - Transaction amounts
-4. **name** - Personal information (PII)
+### Understanding the Security Levels:
 
-### Step 1: Encrypt Sensitive Data (Optional - Advanced)
+1. **Admin** - Full database control (all operations)
+2. **Staff** - Manage accounts and transactions (CRUD operations)
+3. **Customer** - View their own account information only (read-only)
+
+### SQL Statements to Create Users:
 
 ```sql
--- Add encryption for creditLimit if storing new data
--- Example: Using AES encryption
--- Note: For existing data, you'd need to migrate
+-- ============================================
+-- PART 1: USER ACCOUNT CREATION
+-- ============================================
 
--- Create encryption key (store securely, not in database)
-SET @encryption_key = 'YourSecureEncryptionKey123!';
+-- Create Admin User
+CREATE USER 'bank_admin'@'localhost' IDENTIFIED BY 'Admin@2025';
 
--- Example of inserting encrypted data
-INSERT INTO account (no, name, creditLimit, bal) 
-VALUES (
-    'ACC001', 
-    'John Doe', 
-    AES_ENCRYPT('50000', @encryption_key),
-    10000.00
-);
+-- Create Staff User
+CREATE USER 'bank_staff'@'localhost' IDENTIFIED BY 'Staff@2025';
 
--- Example of retrieving decrypted data
+-- Create Customer User
+CREATE USER 'bank_customer'@'localhost' IDENTIFIED BY 'Customer@2025';
+```
+
+### Grant Privileges Based on Security Levels:
+
+```sql
+-- ============================================
+-- GRANT PRIVILEGES TO USERS
+-- ============================================
+
+-- 1. ADMIN PRIVILEGES
+-- Full control over the BANK database
+GRANT ALL PRIVILEGES ON BANK.* TO 'bank_admin'@'localhost';
+
+-- 2. STAFF PRIVILEGES  
+-- Can perform SELECT, INSERT, UPDATE, DELETE on account table
+GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.account TO 'bank_staff'@'localhost';
+
+-- Can perform SELECT, INSERT, UPDATE, DELETE on transaction table
+GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.transaction TO 'bank_staff'@'localhost';
+
+-- 3. CUSTOMER PRIVILEGES
+-- Can only view the account_view (will be created in Part 3)
+-- Read-only access to limited account information
+GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+
+-- Apply all privilege changes
+FLUSH PRIVILEGES;
+```
+
+### Verify Users and Privileges:
+
+```sql
+-- ============================================
+-- VERIFICATION COMMANDS
+-- ============================================
+
+-- Show all users
+SELECT User, Host FROM mysql.user WHERE User LIKE 'bank_%';
+
+-- Show privileges for admin
+SHOW GRANTS FOR 'bank_admin'@'localhost';
+
+-- Show privileges for staff
+SHOW GRANTS FOR 'bank_staff'@'localhost';
+
+-- Show privileges for customer
+SHOW GRANTS FOR 'bank_customer'@'localhost';
+```
+
+### Test User Access:
+
+```bash
+# Test Admin Login
+mysql -u bank_admin -pAdmin@2025 BANK
+
+# Test Staff Login
+mysql -u bank_staff -pStaff@2025 BANK
+
+# Test Customer Login (after creating view in Part 3)
+mysql -u bank_customer -pCustomer@2025 BANK
+```
+
+---
+
+## PART 2: Protect Sensitive Data (4 points)
+
+### Identified Sensitive Data:
+
+1. **CreditLimit** - Financial data (credit worthiness)
+2. **bal** - Account balance (financial data)
+3. **amount** - Transaction amounts (financial data)
+4. **Name** - Personal Identifiable Information (PII)
+5. **No.** - Account number (should be kept confidential)
+
+### Protection Strategy:
+
+1. **Access Control** - Restrict direct table access
+2. **Audit Logging** - Track all changes to sensitive data
+3. **Encryption** - Encrypt sensitive columns (optional but recommended)
+4. **Views** - Provide controlled access to data
+
+### SQL Statements for Data Protection:
+
+```sql
+-- ============================================
+-- PART 2: SENSITIVE DATA PROTECTION
+-- ============================================
+
+-- PROTECTION 1: Create Audit Log Table
+-- Tracks all changes to account balance and credit limit
+CREATE TABLE account_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    account_id INT NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    column_changed VARCHAR(50),
+    old_value VARCHAR(255),
+    new_value VARCHAR(255),
+    changed_by VARCHAR(100),
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- PROTECTION 2: Create Trigger for Balance Changes
+DELIMITER $$
+CREATE TRIGGER account_balance_audit_trigger
+AFTER UPDATE ON account
+FOR EACH ROW
+BEGIN
+    -- Log balance changes
+    IF OLD.bal != NEW.bal THEN
+        INSERT INTO account_audit (
+            account_id, 
+            action_type, 
+            column_changed,
+            old_value, 
+            new_value, 
+            changed_by
+        )
+        VALUES (
+            NEW.ID, 
+            'UPDATE', 
+            'bal',
+            CAST(OLD.bal AS CHAR), 
+            CAST(NEW.bal AS CHAR), 
+            USER()
+        );
+    END IF;
+    
+    -- Log credit limit changes
+    IF OLD.CreditLimit != NEW.CreditLimit THEN
+        INSERT INTO account_audit (
+            account_id, 
+            action_type, 
+            column_changed,
+            old_value, 
+            new_value, 
+            changed_by
+        )
+        VALUES (
+            NEW.ID, 
+            'UPDATE', 
+            'CreditLimit',
+            CAST(OLD.CreditLimit AS CHAR), 
+            CAST(NEW.CreditLimit AS CHAR), 
+            USER()
+        );
+    END IF;
+END$$
+DELIMITER ;
+
+-- PROTECTION 3: Create Trigger for Account Deletion
+DELIMITER $$
+CREATE TRIGGER account_delete_audit_trigger
+BEFORE DELETE ON account
+FOR EACH ROW
+BEGIN
+    INSERT INTO account_audit (
+        account_id, 
+        action_type, 
+        column_changed,
+        old_value, 
+        changed_by
+    )
+    VALUES (
+        OLD.ID, 
+        'DELETE', 
+        'account_record',
+        CONCAT('Name: ', OLD.Name, ', Balance: ', OLD.bal), 
+        USER()
+    );
+END$$
+DELIMITER ;
+
+-- PROTECTION 4: Create Transaction Audit Table
+CREATE TABLE transaction_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id INT NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    old_amount FLOAT,
+    new_amount FLOAT,
+    account_id INT,
+    changed_by VARCHAR(100),
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- PROTECTION 5: Create Trigger for Transaction Changes
+DELIMITER $$
+CREATE TRIGGER transaction_audit_trigger
+AFTER UPDATE ON transaction
+FOR EACH ROW
+BEGIN
+    IF OLD.amount != NEW.amount THEN
+        INSERT INTO transaction_audit (
+            transaction_id,
+            action_type,
+            old_amount,
+            new_amount,
+            account_id,
+            changed_by
+        )
+        VALUES (
+            NEW.id,
+            'AMOUNT_UPDATE',
+            OLD.amount,
+            NEW.amount,
+            NEW.accid,
+            USER()
+        );
+    END IF;
+END$$
+DELIMITER ;
+
+-- PROTECTION 6: Revoke Direct Access to Sensitive Tables
+-- Customers should not have direct access to account or transaction tables
+REVOKE ALL PRIVILEGES ON BANK.account FROM 'bank_customer'@'localhost';
+REVOKE ALL PRIVILEGES ON BANK.transaction FROM 'bank_customer'@'localhost';
+
+-- Customers can only access through the view (granted in Part 3)
+FLUSH PRIVILEGES;
+
+-- PROTECTION 7: Create Encrypted Column Functions (Optional Enhancement)
+-- Function to mask credit card/account numbers
+DELIMITER $$
+CREATE FUNCTION mask_account_number(account_no VARCHAR(20))
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    RETURN CONCAT('****', RIGHT(account_no, 4));
+END$$
+DELIMITER ;
+
+-- PROTECTION 8: Create Role-Based Access Control
+-- Ensure staff cannot delete account records (only admin can)
+REVOKE DELETE ON BANK.account FROM 'bank_staff'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Verify Protection Mechanisms:
+
+```sql
+-- ============================================
+-- VERIFICATION OF PROTECTION
+-- ============================================
+
+-- Check audit table exists
+SHOW TABLES LIKE '%audit%';
+
+-- Check triggers
+SHOW TRIGGERS FROM BANK;
+
+-- Test audit logging (as admin)
+UPDATE account SET bal = 15000 WHERE ID = 105;
+
+-- View audit log
+SELECT * FROM account_audit;
+
+-- Test the masking function
 SELECT 
-    id,
-    no,
-    name,
-    AES_DECRYPT(creditLimit, @encryption_key) AS creditLimit,
+    ID,
+    mask_account_number(`No.`) AS masked_account,
+    Name,
     bal
 FROM account;
 ```
 
-### Step 2: Restrict Direct Access to Sensitive Columns
+---
+
+## PART 3: Create View (4 points)
+
+### View Requirements:
+- Contains: account no., name, balance
+- Provides read-only access for customers
+- Hides sensitive information (CreditLimit)
+
+### SQL Statements to Create View:
 
 ```sql
--- Revoke direct access to sensitive columns for customers
--- Customers should only access through views with limited columns
-REVOKE SELECT ON BANK.account FROM 'bank_customer'@'localhost';
-REVOKE SELECT ON BANK.transaction FROM 'bank_customer'@'localhost';
+-- ============================================
+-- PART 3: CREATE ACCOUNT VIEW
+-- ============================================
+
+-- Drop view if it already exists (for clean creation)
+DROP VIEW IF EXISTS account_view;
+
+-- Create the view with account number, name, and balance
+CREATE VIEW account_view AS
+SELECT 
+    `No.` AS account_no,
+    Name AS name,
+    bal AS balance
+FROM account;
+
+-- Grant SELECT permission to customers on this view
+GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+
+-- Grant SELECT permission to staff on this view  
+GRANT SELECT ON BANK.account_view TO 'bank_staff'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
 
-### Step 3: Create Audit Log for Sensitive Data Access
+### Enhanced View with Additional Security (Optional):
 
 ```sql
--- Create audit log table
-CREATE TABLE IF NOT EXISTS account_audit (
+-- ============================================
+-- ENHANCED VIEW (OPTIONAL)
+-- ============================================
+
+-- Create a view that also masks part of the account number
+DROP VIEW IF EXISTS account_view_masked;
+
+CREATE VIEW account_view_masked AS
+SELECT 
+    mask_account_number(`No.`) AS masked_account_no,
+    Name AS name,
+    bal AS balance
+FROM account;
+
+-- Grant access to this masked view
+GRANT SELECT ON BANK.account_view_masked TO 'bank_customer'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Verify the View:
+
+```sql
+-- ============================================
+-- VERIFICATION COMMANDS
+-- ============================================
+
+-- Check if view exists
+SHOW FULL TABLES WHERE Table_type = 'VIEW';
+
+-- View the structure
+DESCRIBE account_view;
+
+-- Test the view as admin
+SELECT * FROM account_view;
+
+-- Test as customer (login as bank_customer first)
+-- mysql -u bank_customer -pCustomer@2025 BANK
+-- SELECT * FROM account_view;
+```
+
+---
+
+## Complete Testing Procedure
+
+### Test as Admin:
+
+```sql
+-- Login as admin
+-- mysql -u bank_admin -pAdmin@2025 BANK
+
+-- Admin can do everything
+SELECT * FROM account;
+SELECT * FROM transaction;
+SELECT * FROM account_view;
+SELECT * FROM account_audit;
+
+-- Admin can modify data
+UPDATE account SET bal = 14000 WHERE ID = 105;
+
+-- Check audit log
+SELECT * FROM account_audit ORDER BY changed_at DESC;
+```
+
+### Test as Staff:
+
+```sql
+-- Login as staff
+-- mysql -u bank_staff -pStaff@2025 BANK
+
+-- Staff can view and modify account and transaction
+SELECT * FROM account;
+UPDATE account SET bal = 13500 WHERE ID = 105;
+
+-- Staff CANNOT delete accounts (should get permission denied)
+DELETE FROM account WHERE ID = 105;  -- This should fail
+
+-- Staff can access the view
+SELECT * FROM account_view;
+```
+
+### Test as Customer:
+
+```sql
+-- Login as customer
+-- mysql -u bank_customer -pCustomer@2025 BANK
+
+-- Customer can ONLY view the account_view
+SELECT * FROM account_view;
+
+-- Customer CANNOT access tables directly (should get permission denied)
+SELECT * FROM account;  -- This should fail
+SELECT * FROM transaction;  -- This should fail
+
+-- Customer CANNOT modify anything
+UPDATE account_view SET balance = 20000;  -- This should fail
+```
+
+---
+
+## Summary of Implementation
+
+### Part 1: User Accounts (2 points)
+✅ Created 3 users: bank_admin, bank_staff, bank_customer
+✅ Assigned appropriate privileges based on security levels
+✅ Admin: Full control (ALL PRIVILEGES)
+✅ Staff: CRUD operations on account and transaction tables
+✅ Customer: Read-only access through view
+
+### Part 2: Sensitive Data Protection (4 points)
+✅ Identified sensitive data: CreditLimit, bal, amount, Name, No.
+✅ Created audit tables for tracking changes
+✅ Implemented triggers for automatic audit logging
+✅ Restricted direct table access for customers
+✅ Revoked DELETE privilege from staff on account table
+✅ Created masking function for account numbers
+✅ Implemented role-based access control
+
+### Part 3: View Creation (4 points)
+✅ Created account_view with account_no, name, balance
+✅ Granted appropriate access to customers and staff
+✅ Hides sensitive information (CreditLimit)
+✅ Provides read-only access layer
+
+---
+
+## Files to Submit
+
+### 1. SQL_Statements.sql
+All SQL commands from Parts 1, 2, and 3 combined in one file.
+
+### 2. Document File (Convert to PDF)
+A Word document containing:
+- All SQL statements with explanations
+- Security analysis of the database
+- List of sensitive data identified
+- Description of protection mechanisms
+- Screenshots of verification (optional)
+
+### Submission Structure:
+```
+YourID_Number/
+├── SQL_Statements.sql
+└── Assignment8_YourID.pdf
+```
+
+Zip the folder and name it with your ID number.
+
+---
+
+## Quick Copy-Paste All Commands
+
+```sql
+-- ============================================
+-- COMPLETE SQL SCRIPT FOR ASSIGNMENT 8
+-- Database Security - BANK Database
+-- ============================================
+
+USE BANK;
+
+-- PART 1: CREATE USERS
+CREATE USER 'bank_admin'@'localhost' IDENTIFIED BY 'Admin@2025';
+CREATE USER 'bank_staff'@'localhost' IDENTIFIED BY 'Staff@2025';
+CREATE USER 'bank_customer'@'localhost' IDENTIFIED BY 'Customer@2025';
+
+-- PART 1: GRANT PRIVILEGES
+GRANT ALL PRIVILEGES ON BANK.* TO 'bank_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.account TO 'bank_staff'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.transaction TO 'bank_staff'@'localhost';
+REVOKE DELETE ON BANK.account FROM 'bank_staff'@'localhost';
+FLUSH PRIVILEGES;
+
+-- PART 2: AUDIT TABLES
+CREATE TABLE account_audit (
     audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    account_id INT NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    column_changed VARCHAR(50),
+    old_value VARCHAR(255),
+    new_value VARCHAR(255),
+    changed_by VARCHAR(100),
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE transaction_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id INT NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    old_amount FLOAT,
+    new_amount FLOAT,
     account_id INT,
-    action_type VARCHAR(50),
-    old_balance FLOAT,
-    new_balance FLOAT,
     changed_by VARCHAR(100),
     changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Create trigger to log balance changes
+-- PART 2: TRIGGERS
 DELIMITER $$
-CREATE TRIGGER account_balance_audit
+CREATE TRIGGER account_balance_audit_trigger
 AFTER UPDATE ON account
 FOR EACH ROW
 BEGIN
     IF OLD.bal != NEW.bal THEN
-        INSERT INTO account_audit (account_id, action_type, old_balance, new_balance, changed_by)
-        VALUES (NEW.id, 'BALANCE_UPDATE', OLD.bal, NEW.bal, USER());
+        INSERT INTO account_audit (account_id, action_type, column_changed, old_value, new_value, changed_by)
+        VALUES (NEW.ID, 'UPDATE', 'bal', CAST(OLD.bal AS CHAR), CAST(NEW.bal AS CHAR), USER());
+    END IF;
+    IF OLD.CreditLimit != NEW.CreditLimit THEN
+        INSERT INTO account_audit (account_id, action_type, column_changed, old_value, new_value, changed_by)
+        VALUES (NEW.ID, 'UPDATE', 'CreditLimit', CAST(OLD.CreditLimit AS CHAR), CAST(NEW.CreditLimit AS CHAR), USER());
+    END IF;
+END$$
+
+CREATE TRIGGER account_delete_audit_trigger
+BEFORE DELETE ON account
+FOR EACH ROW
+BEGIN
+    INSERT INTO account_audit (account_id, action_type, column_changed, old_value, changed_by)
+    VALUES (OLD.ID, 'DELETE', 'account_record', CONCAT('Name: ', OLD.Name, ', Balance: ', OLD.bal), USER());
+END$$
+
+CREATE TRIGGER transaction_audit_trigger
+AFTER UPDATE ON transaction
+FOR EACH ROW
+BEGIN
+    IF OLD.amount != NEW.amount THEN
+        INSERT INTO transaction_audit (transaction_id, action_type, old_amount, new_amount, account_id, changed_by)
+        VALUES (NEW.id, 'AMOUNT_UPDATE', OLD.amount, NEW.amount, NEW.accid, USER());
     END IF;
 END$$
 DELIMITER ;
-```
 
-### Step 4: Implement Row-Level Security (Using Views)
+-- PART 2: MASKING FUNCTION
+DELIMITER $$
+CREATE FUNCTION mask_account_number(account_no VARCHAR(20))
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    RETURN CONCAT('****', RIGHT(account_no, 4));
+END$$
+DELIMITER ;
 
-```sql
--- For customers to view only their own transactions
--- This would require a user-account mapping table in production
-CREATE VIEW customer_transactions AS
-SELECT 
-    t.id,
-    t.type,
-    t.amount,
-    t.date
-FROM transaction t
-WHERE t.accid = (
-    -- In production, link this to authenticated user
-    SELECT id FROM account WHERE no = CURRENT_USER()
-);
-```
-
----
-
-## Part 3: Create View (2 points)
-
-### Create Account View with Account No, Name, and Balance
-
-```sql
--- Drop view if exists (for clean creation)
-DROP VIEW IF EXISTS account_view;
-
--- Create the view
-CREATE VIEW account_view AS
-SELECT 
-    no AS account_no,
-    name,
-    bal AS balance
-FROM account;
-
--- Grant access to customers
-GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+-- PART 2: REVOKE DIRECT ACCESS
+REVOKE ALL PRIVILEGES ON BANK.account FROM 'bank_customer'@'localhost';
+REVOKE ALL PRIVILEGES ON BANK.transaction FROM 'bank_customer'@'localhost';
 FLUSH PRIVILEGES;
 
--- Test the view
+-- PART 3: CREATE VIEW
+DROP VIEW IF EXISTS account_view;
+CREATE VIEW account_view AS
+SELECT `No.` AS account_no, Name AS name, bal AS balance
+FROM account;
+
+-- PART 3: GRANT ACCESS TO VIEW
+GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+GRANT SELECT ON BANK.account_view TO 'bank_staff'@'localhost';
+FLUSH PRIVILEGES;
+
+-- VERIFICATION
+SHOW GRANTS FOR 'bank_admin'@'localhost';
+SHOW GRANTS FOR 'bank_staff'@'localhost';
+SHOW GRANTS FOR 'bank_customer'@'localhost';
+SHOW TRIGGERS FROM BANK;
 SELECT * FROM account_view;
 ```
 
----
-
-## Part 4: PHP Admin Login Code (4 points) (Don't submit)
-
-### File 1: `login.html`
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Bank Admin Login</title>
-</head>
-<body>
-    <h2>Bank Database - Admin Login</h2>
-    
-    <?php
-    if(isset($_GET['error'])) {
-        echo "<p style='color: red;'>Invalid username or password!</p>";
-    }
-    ?>
-    
-    <form action="authenticate.php" method="POST">
-        <table>
-            <tr>
-                <td>Username:</td>
-                <td><input type="text" name="username" required></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type="password" name="password" required></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Login"></td>
-            </tr>
-        </table>
-    </form>
-</body>
-</html>
-```
-
-### File 2: `authenticate.php`
-
-```php
-<?php
-session_start();
-
-// Database connection parameters
-$servername = "localhost";
-$username = $_POST['username'];
-$password = $_POST['password'];
-$dbname = "BANK";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    header("Location: login.html?error=1");
-    exit();
-}
-
-// Verify user has admin privileges
-$query = "SELECT CURRENT_USER() as current_user";
-$result = $conn->query($query);
-$row = $result->fetch_assoc();
-
-// Check if user is admin
-if (strpos($row['current_user'], 'bank_admin') !== false) {
-    $_SESSION['username'] = $username;
-    $_SESSION['logged_in'] = true;
-    header("Location: display_accounts.php");
-} else {
-    $conn->close();
-    header("Location: login.html?error=1");
-}
-exit();
-?>
-```
-
-### File 3: `display_accounts.php`
-
-```php
-<?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.html");
-    exit();
-}
-
-// Database connection (use admin credentials from session)
-$servername = "localhost";
-$username = "bank_admin";
-$password = "Admin@123";
-$dbname = "BANK";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Fetch account data
-$sql = "SELECT * FROM account";
-$result = $conn->query($sql);
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Account Management</title>
-</head>
-<body>
-    <h2>Bank Account Management System</h2>
-    <p>Welcome, Admin! | <a href="logout.php">Logout</a></p>
-    
-    <h3>Account Table</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Account No</th>
-            <th>Name</th>
-            <th>Credit Limit</th>
-            <th>Balance</th>
-        </tr>
-        
-        <?php
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row['id'] . "</td>";
-                echo "<td>" . $row['no'] . "</td>";
-                echo "<td>" . $row['name'] . "</td>";
-                echo "<td>" . number_format($row['creditLimit'], 2) . "</td>";
-                echo "<td>" . number_format($row['bal'], 2) . "</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='5'>No records found</td></tr>";
-        }
-        ?>
-    </table>
-    
-    <?php
-    $conn->close();
-    ?>
-</body>
-</html>
-```
-
-### File 4: `logout.php`
-
-```php
-<?php
-session_start();
-session_destroy();
-header("Location: login.html");
-exit();
-?>
-```
-
----
-
-## Execution Steps in MySQL Shell
-
-### Step-by-Step Commands:
-
-```bash
-# 1. Login to MySQL as root
-mysql -u root -p
-
-# 2. Select the BANK database
-USE BANK;
-
-# 3. Create users (copy-paste the SQL from Part 1)
-
-# 4. Grant privileges (copy-paste the SQL from Part 1)
-
-# 5. Create audit table and triggers (copy-paste from Part 2)
-
-# 6. Create view (copy-paste from Part 3)
-
-# 7. Exit MySQL
-EXIT;
-
-# 8. Test login with different users
-mysql -u bank_admin -p BANK
-mysql -u bank_staff -p BANK
-mysql -u bank_customer -p BANK
-```
-
----
-
-## Summary of Security Implementation
-
-### User Roles & Privileges:
-- **Admin**: Full database control (ALL PRIVILEGES)
-- **Staff**: Can manage accounts and transactions (SELECT, INSERT, UPDATE, DELETE)
-- **Customer**: Read-only access through views (SELECT on views only)
-
-### Sensitive Data Protection:
-1. **Identified**: creditLimit, bal, amount, name
-2. **Protected via**: User privileges, views, audit logging, optional encryption
-3. **Access Control**: Row-level security through views
-4. **Audit Trail**: Tracks all balance changes
-
-### View Created:
-- **account_view**: Shows account_no, name, balance only
-
-### Admin Login System:
-- Session-based authentication
-- Role verification
-- Secure database connection
-- Account display page
-
----
-
-## Files to Submit:
-
-1. **SQL_Statements.pdf** - All SQL commands from Parts 1-3
-2. **login.html** - Login form (Don't submit)
-3. **authenticate.php** - Authentication logic (Don't submit)
-4. **display_accounts.php** - Account display page (Don't submit)
-5. **logout.php** - Logout functionality (Don't submit)
-6. **bank_database.sql** - Export of your database with all changes
-
-Zip all files with your ID number as the folder name.
+Copy the above script and execute it in MySQL Shell or phpMyAdmin!
