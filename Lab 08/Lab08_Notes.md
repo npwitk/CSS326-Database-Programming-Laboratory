@@ -486,7 +486,9 @@ SELECT AES_ENCRYPT('text', 'pass');
 ```sql
 -- Modify salary column to accommodate encrypted data
 ALTER TABLE customers 
-MODIFY salary VARCHAR(50);
+MODIFY salary BLOB;
+
+-- BLOB is Binary Large Object (special data type in MySQL) used to store raw binary data (Images, Files, Audio/video, Encrypted data)
 
 -- Encrypt salary using AES with SHA1 as key
 UPDATE customers 
