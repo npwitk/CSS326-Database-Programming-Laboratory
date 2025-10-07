@@ -205,7 +205,8 @@ VALUES('John', 'pa123ss'),
 
 -- Create user with read and write privileges
 CREATE USER IF NOT EXISTS test IDENTIFIED BY 'password';
-GRANT SELECT, INSERT ON practice.* TO 'test' IDENTIFIED BY "password";
+GRANT SELECT, INSERT ON practice.* TO 'test' IDENTIFIED BY "password"; -- OLD VERSION
+GRANT SELECT, INSERT ON practice.* TO 'test'; -- NEW VERSION
 FLUSH PRIVILEGES;
 
 -- Revoke SELECT privilege (leaving only INSERT/write capability)
