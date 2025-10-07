@@ -6,3 +6,4 @@
 - Lab 06 - Database Programming using C$ & MySQL (Sep 16)
 - Midterm
 - Lab 07 - Store Procedure, Functions & Triggers (Sep 30)
+- Lab 08 - Database Security (Oct 7)
