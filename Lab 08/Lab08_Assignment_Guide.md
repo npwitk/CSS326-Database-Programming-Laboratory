@@ -168,7 +168,7 @@ SELECT * FROM account_view;
 
 ---
 
-## Part 4: PHP Admin Login Code (4 points)
+## Part 4: PHP Admin Login Code (4 points) (Don't submit)
 
 ### File 1: `login.html`
 
@@ -388,10 +388,10 @@ mysql -u bank_customer -p BANK
 ## Files to Submit:
 
 1. **SQL_Statements.pdf** - All SQL commands from Parts 1-3
-2. **login.html** - Login form
-3. **authenticate.php** - Authentication logic
-4. **display_accounts.php** - Account display page
-5. **logout.php** - Logout functionality
+2. **login.html** - Login form (Don't submit)
+3. **authenticate.php** - Authentication logic (Don't submit)
+4. **display_accounts.php** - Account display page (Don't submit)
+5. **logout.php** - Logout functionality (Don't submit)
 6. **bank_database.sql** - Export of your database with all changes
 
 Zip all files with your ID number as the folder name.
