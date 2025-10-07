@@ -7,13 +7,13 @@
 mysql -u root -p
 
 # Create the BANK database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS BANK;
+CREATE DATABASE IF NOT EXISTS cust;
 
 # Exit and import the SQL file
 exit
 
 # Import the Bank.sql file
-mysql -u root -p BANK < Bank.sql
+mysql -u root -p cust < Bank.sql
 
 # Or in phpMyAdmin: Import > Choose Bank.sql file > Go
 ```
@@ -25,7 +25,7 @@ mysql -u root -p BANK < Bank.sql
 mysql -u root -p
 
 -- Use the database
-USE BANK;
+USE cust;
 
 -- Check tables
 SHOW TABLES;
@@ -54,10 +54,6 @@ SELECT * FROM transaction;
 ### SQL Statements to Create Users:
 
 ```sql
--- ============================================
--- PART 1: USER ACCOUNT CREATION
--- ============================================
-
 -- Create Admin User
 CREATE USER 'bank_admin'@'localhost' IDENTIFIED BY 'Admin@2025';
 
@@ -71,25 +67,21 @@ CREATE USER 'bank_customer'@'localhost' IDENTIFIED BY 'Customer@2025';
 ### Grant Privileges Based on Security Levels:
 
 ```sql
--- ============================================
--- GRANT PRIVILEGES TO USERS
--- ============================================
-
 -- 1. ADMIN PRIVILEGES
 -- Full control over the BANK database
-GRANT ALL PRIVILEGES ON BANK.* TO 'bank_admin'@'localhost';
+GRANT ALL PRIVILEGES ON cust.* TO 'bank_admin'@'localhost';
 
 -- 2. STAFF PRIVILEGES  
 -- Can perform SELECT, INSERT, UPDATE, DELETE on account table
-GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.account TO 'bank_staff'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON cust.account TO 'bank_staff'@'localhost';
 
 -- Can perform SELECT, INSERT, UPDATE, DELETE on transaction table
-GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.transaction TO 'bank_staff'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON cust.transaction TO 'bank_staff'@'localhost';
 
 -- 3. CUSTOMER PRIVILEGES
 -- Can only view the account_view (will be created in Part 3)
 -- Read-only access to limited account information
-GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+GRANT SELECT ON cust.account_view TO 'bank_customer'@'localhost';
 
 -- Apply all privilege changes
 FLUSH PRIVILEGES;
@@ -119,13 +111,13 @@ SHOW GRANTS FOR 'bank_customer'@'localhost';
 
 ```bash
 # Test Admin Login
-mysql -u bank_admin -pAdmin@2025 BANK
+mysql -u bank_admin -pAdmin@2025 cust
 
 # Test Staff Login
-mysql -u bank_staff -pStaff@2025 BANK
+mysql -u bank_staff -pStaff@2025 cust
 
 # Test Customer Login (after creating view in Part 3)
-mysql -u bank_customer -pCustomer@2025 BANK
+mysql -u bank_customer -pCustomer@2025 cust
 ```
 
 ---
@@ -150,10 +142,6 @@ mysql -u bank_customer -pCustomer@2025 BANK
 ### SQL Statements for Data Protection:
 
 ```sql
--- ============================================
--- PART 2: SENSITIVE DATA PROTECTION
--- ============================================
-
 -- PROTECTION 1: Create Audit Log Table
 -- Tracks all changes to account balance and credit limit
 CREATE TABLE account_audit (
@@ -280,8 +268,8 @@ DELIMITER ;
 
 -- PROTECTION 6: Revoke Direct Access to Sensitive Tables
 -- Customers should not have direct access to account or transaction tables
-REVOKE ALL PRIVILEGES ON BANK.account FROM 'bank_customer'@'localhost';
-REVOKE ALL PRIVILEGES ON BANK.transaction FROM 'bank_customer'@'localhost';
+REVOKE ALL PRIVILEGES ON cust.account FROM 'bank_customer'@'localhost';
+REVOKE ALL PRIVILEGES ON cust.transaction FROM 'bank_customer'@'localhost';
 
 -- Customers can only access through the view (granted in Part 3)
 FLUSH PRIVILEGES;
@@ -299,22 +287,18 @@ DELIMITER ;
 
 -- PROTECTION 8: Create Role-Based Access Control
 -- Ensure staff cannot delete account records (only admin can)
-REVOKE DELETE ON BANK.account FROM 'bank_staff'@'localhost';
+REVOKE DELETE ON cust.account FROM 'bank_staff'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
 ### Verify Protection Mechanisms:
 
 ```sql
--- ============================================
--- VERIFICATION OF PROTECTION
--- ============================================
-
 -- Check audit table exists
 SHOW TABLES LIKE '%audit%';
 
 -- Check triggers
-SHOW TRIGGERS FROM BANK;
+SHOW TRIGGERS FROM cust;
 
 -- Test audit logging (as admin)
 UPDATE account SET bal = 15000 WHERE ID = 105;
@@ -359,10 +343,10 @@ SELECT
 FROM account;
 
 -- Grant SELECT permission to customers on this view
-GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
+GRANT SELECT ON cust.account_view TO 'bank_customer'@'localhost';
 
 -- Grant SELECT permission to staff on this view  
-GRANT SELECT ON BANK.account_view TO 'bank_staff'@'localhost';
+GRANT SELECT ON cust.account_view TO 'bank_staff'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
@@ -370,10 +354,6 @@ FLUSH PRIVILEGES;
 ### Enhanced View with Additional Security (Optional):
 
 ```sql
--- ============================================
--- ENHANCED VIEW (OPTIONAL)
--- ============================================
-
 -- Create a view that also masks part of the account number
 DROP VIEW IF EXISTS account_view_masked;
 
@@ -385,17 +365,13 @@ SELECT
 FROM account;
 
 -- Grant access to this masked view
-GRANT SELECT ON BANK.account_view_masked TO 'bank_customer'@'localhost';
+GRANT SELECT ON cust.account_view_masked TO 'bank_customer'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
 ### Verify the View:
 
 ```sql
--- ============================================
--- VERIFICATION COMMANDS
--- ============================================
-
 -- Check if view exists
 SHOW FULL TABLES WHERE Table_type = 'VIEW';
 
@@ -406,7 +382,7 @@ DESCRIBE account_view;
 SELECT * FROM account_view;
 
 -- Test as customer (login as bank_customer first)
--- mysql -u bank_customer -pCustomer@2025 BANK
+-- mysql -u bank_customer -pCustomer@2025 cust
 -- SELECT * FROM account_view;
 ```
 
@@ -418,7 +394,7 @@ SELECT * FROM account_view;
 
 ```sql
 -- Login as admin
--- mysql -u bank_admin -pAdmin@2025 BANK
+-- mysql -u bank_admin -pAdmin@2025 cust
 
 -- Admin can do everything
 SELECT * FROM account;
@@ -437,7 +413,7 @@ SELECT * FROM account_audit ORDER BY changed_at DESC;
 
 ```sql
 -- Login as staff
--- mysql -u bank_staff -pStaff@2025 BANK
+-- mysql -u bank_staff -pStaff@2025 cust
 
 -- Staff can view and modify account and transaction
 SELECT * FROM account;
@@ -454,7 +430,7 @@ SELECT * FROM account_view;
 
 ```sql
 -- Login as customer
--- mysql -u bank_customer -pCustomer@2025 BANK
+-- mysql -u bank_customer -pCustomer@2025 cust
 
 -- Customer can ONLY view the account_view
 SELECT * FROM account_view;
@@ -472,26 +448,26 @@ UPDATE account_view SET balance = 20000;  -- This should fail
 ## Summary of Implementation
 
 ### Part 1: User Accounts (2 points)
-✅ Created 3 users: bank_admin, bank_staff, bank_customer
-✅ Assigned appropriate privileges based on security levels
-✅ Admin: Full control (ALL PRIVILEGES)
-✅ Staff: CRUD operations on account and transaction tables
-✅ Customer: Read-only access through view
+- ✅ Created 3 users: bank_admin, bank_staff, bank_customer
+- ✅ Assigned appropriate privileges based on security levels
+- ✅ Admin: Full control (ALL PRIVILEGES)
+- ✅ Staff: CRUD operations on account and transaction tables
+- ✅ Customer: Read-only access through view
 
 ### Part 2: Sensitive Data Protection (4 points)
-✅ Identified sensitive data: CreditLimit, bal, amount, Name, No.
-✅ Created audit tables for tracking changes
-✅ Implemented triggers for automatic audit logging
-✅ Restricted direct table access for customers
-✅ Revoked DELETE privilege from staff on account table
-✅ Created masking function for account numbers
-✅ Implemented role-based access control
+- ✅ Identified sensitive data: CreditLimit, bal, amount, Name, No.
+- ✅ Created audit tables for tracking changes
+- ✅ Implemented triggers for automatic audit logging
+- ✅ Restricted direct table access for customers
+- ✅ Revoked DELETE privilege from staff on account table
+- ✅ Created masking function for account numbers
+- ✅ Implemented role-based access control
 
 ### Part 3: View Creation (4 points)
-✅ Created account_view with account_no, name, balance
-✅ Granted appropriate access to customers and staff
-✅ Hides sensitive information (CreditLimit)
-✅ Provides read-only access layer
+- ✅ Created account_view with account_no, name, balance
+- ✅ Granted appropriate access to customers and staff
+- ✅ Hides sensitive information (CreditLimit)
+- ✅ Provides read-only access layer
 
 ---
 
@@ -514,124 +490,3 @@ YourID_Number/
 ├── SQL_Statements.sql
 └── Assignment8_YourID.pdf
 ```
-
-Zip the folder and name it with your ID number.
-
----
-
-## Quick Copy-Paste All Commands
-
-```sql
--- ============================================
--- COMPLETE SQL SCRIPT FOR ASSIGNMENT 8
--- Database Security - BANK Database
--- ============================================
-
-USE BANK;
-
--- PART 1: CREATE USERS
-CREATE USER 'bank_admin'@'localhost' IDENTIFIED BY 'Admin@2025';
-CREATE USER 'bank_staff'@'localhost' IDENTIFIED BY 'Staff@2025';
-CREATE USER 'bank_customer'@'localhost' IDENTIFIED BY 'Customer@2025';
-
--- PART 1: GRANT PRIVILEGES
-GRANT ALL PRIVILEGES ON BANK.* TO 'bank_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.account TO 'bank_staff'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON BANK.transaction TO 'bank_staff'@'localhost';
-REVOKE DELETE ON BANK.account FROM 'bank_staff'@'localhost';
-FLUSH PRIVILEGES;
-
--- PART 2: AUDIT TABLES
-CREATE TABLE account_audit (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    account_id INT NOT NULL,
-    action_type VARCHAR(50) NOT NULL,
-    column_changed VARCHAR(50),
-    old_value VARCHAR(255),
-    new_value VARCHAR(255),
-    changed_by VARCHAR(100),
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ip_address VARCHAR(45)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE transaction_audit (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    transaction_id INT NOT NULL,
-    action_type VARCHAR(50) NOT NULL,
-    old_amount FLOAT,
-    new_amount FLOAT,
-    account_id INT,
-    changed_by VARCHAR(100),
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- PART 2: TRIGGERS
-DELIMITER $$
-CREATE TRIGGER account_balance_audit_trigger
-AFTER UPDATE ON account
-FOR EACH ROW
-BEGIN
-    IF OLD.bal != NEW.bal THEN
-        INSERT INTO account_audit (account_id, action_type, column_changed, old_value, new_value, changed_by)
-        VALUES (NEW.ID, 'UPDATE', 'bal', CAST(OLD.bal AS CHAR), CAST(NEW.bal AS CHAR), USER());
-    END IF;
-    IF OLD.CreditLimit != NEW.CreditLimit THEN
-        INSERT INTO account_audit (account_id, action_type, column_changed, old_value, new_value, changed_by)
-        VALUES (NEW.ID, 'UPDATE', 'CreditLimit', CAST(OLD.CreditLimit AS CHAR), CAST(NEW.CreditLimit AS CHAR), USER());
-    END IF;
-END$$
-
-CREATE TRIGGER account_delete_audit_trigger
-BEFORE DELETE ON account
-FOR EACH ROW
-BEGIN
-    INSERT INTO account_audit (account_id, action_type, column_changed, old_value, changed_by)
-    VALUES (OLD.ID, 'DELETE', 'account_record', CONCAT('Name: ', OLD.Name, ', Balance: ', OLD.bal), USER());
-END$$
-
-CREATE TRIGGER transaction_audit_trigger
-AFTER UPDATE ON transaction
-FOR EACH ROW
-BEGIN
-    IF OLD.amount != NEW.amount THEN
-        INSERT INTO transaction_audit (transaction_id, action_type, old_amount, new_amount, account_id, changed_by)
-        VALUES (NEW.id, 'AMOUNT_UPDATE', OLD.amount, NEW.amount, NEW.accid, USER());
-    END IF;
-END$$
-DELIMITER ;
-
--- PART 2: MASKING FUNCTION
-DELIMITER $$
-CREATE FUNCTION mask_account_number(account_no VARCHAR(20))
-RETURNS VARCHAR(20)
-DETERMINISTIC
-BEGIN
-    RETURN CONCAT('****', RIGHT(account_no, 4));
-END$$
-DELIMITER ;
-
--- PART 2: REVOKE DIRECT ACCESS
-REVOKE ALL PRIVILEGES ON BANK.account FROM 'bank_customer'@'localhost';
-REVOKE ALL PRIVILEGES ON BANK.transaction FROM 'bank_customer'@'localhost';
-FLUSH PRIVILEGES;
-
--- PART 3: CREATE VIEW
-DROP VIEW IF EXISTS account_view;
-CREATE VIEW account_view AS
-SELECT `No.` AS account_no, Name AS name, bal AS balance
-FROM account;
-
--- PART 3: GRANT ACCESS TO VIEW
-GRANT SELECT ON BANK.account_view TO 'bank_customer'@'localhost';
-GRANT SELECT ON BANK.account_view TO 'bank_staff'@'localhost';
-FLUSH PRIVILEGES;
-
--- VERIFICATION
-SHOW GRANTS FOR 'bank_admin'@'localhost';
-SHOW GRANTS FOR 'bank_staff'@'localhost';
-SHOW GRANTS FOR 'bank_customer'@'localhost';
-SHOW TRIGGERS FROM BANK;
-SELECT * FROM account_view;
-```
-
-Copy the above script and execute it in MySQL Shell or phpMyAdmin!
