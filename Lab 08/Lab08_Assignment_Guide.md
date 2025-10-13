@@ -1,206 +1,183 @@
 # Lab Assignment 8 - Database Security
 
+## Overview
+This lab implements database security using user accounts, encryption, and views on a Bank database.
+
+---
+
 ## STEP 0: Import the Database
 
+### Import the Bank.sql file
+
 ```bash
+# Method 1: Command Line
 mysql -u root -p
 
-# Create the cust database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS cust;
-
-# Exit and import the SQL file
 exit
 
-# Import the Bank.sql file into cust database
 mysql -u root -p cust < Bank.sql
-
-# Or in phpMyAdmin: Select cust database > Import > Choose Bank.sql file > Go
 ```
+
+Or use **phpMyAdmin**: Select `cust` database → Import → Choose `Bank.sql` → Go
 
 ### Verify the Import
 
 ```sql
-mysql -u root -p
-
--- Use the database
 USE cust;
 
--- Check tables
 SHOW TABLES;
+-- Should show: account, transaction
 
--- Check account table structure
 DESCRIBE account;
-
--- Check transaction table structure  
 DESCRIBE transaction;
 
--- View sample data
 SELECT * FROM account;
-SELECT * FROM transaction;
+-- Should show: ID=105, No.='N01', Name='John Morris', CreditLimit=20000, bal=13000
 ```
 
 ---
 
-## PART 1: Define User Accounts
+## PART 1: Define User Accounts (2 points)
 
-### Understanding the Security Levels:
+### Security Level Design
 
-Based on **Mandatory Access Control (MAC)** from the lecture:
+Based on Mandatory Access Control (MAC):
 
-1. **Admin (TS - Top Secret)** - Full database control (all operations)
-2. **Staff (S - Secret)** - Manage accounts and transactions (CRUD operations)
-3. **Customer (C - Confidential)** - View their own account information only (read-only)
+| User Type | Security Level | Database Permissions |
+|-----------|---------------|---------------------|
+| **Admin** | Top Secret (TS) | Full control - ALL PRIVILEGES |
+| **Staff** | Secret (S) | CRUD on account & transaction tables |
+| **Customer** | Confidential (C) | Read-only access via view only |
 
-### SQL Statements to Create Users:
+### Create Users
 
 ```sql
--- Create Admin User (Top Secret Level)
+-- Create three user accounts
 CREATE USER IF NOT EXISTS 'cust_admin'@'localhost' IDENTIFIED BY 'Admin@2025';
-
--- Create Staff User (Secret Level)
 CREATE USER IF NOT EXISTS 'cust_staff'@'localhost' IDENTIFIED BY 'Staff@2025';
-
--- Create Customer User (Confidential Level)
 CREATE USER IF NOT EXISTS 'cust_customer'@'localhost' IDENTIFIED BY 'Customer@2025';
 ```
 
-### Grant Privileges Based on Security Levels:
+### Grant Privileges
 
 ```sql
--- 1. ADMIN PRIVILEGES (Top Secret - TS)
--- Account level privileges: Full control over the cust database
+-- ADMIN: Full control over cust database
 GRANT ALL PRIVILEGES ON cust.* TO 'cust_admin'@'localhost';
 
--- 2. STAFF PRIVILEGES (Secret - S)
--- Relationship level access control
--- Can perform SELECT, INSERT, UPDATE, DELETE on account table
+-- STAFF: CRUD operations on both tables
 GRANT SELECT, INSERT, UPDATE, DELETE ON cust.account TO 'cust_staff'@'localhost';
-
--- Can perform SELECT, INSERT, UPDATE, DELETE on transaction table
 GRANT SELECT, INSERT, UPDATE, DELETE ON cust.transaction TO 'cust_staff'@'localhost';
 
--- 3. CUSTOMER PRIVILEGES (Confidential - C)
--- Can only view the account_view (will be created in Part 3)
--- Read-only access to limited account information
--- Note: This will be granted after creating the view in Part 3
--- GRANT SELECT ON cust.account_view TO 'cust_customer'@'localhost';
+-- CUSTOMER: Will be granted SELECT on view only (after Part 3)
 
--- Apply all privilege changes
+-- Apply changes
 FLUSH PRIVILEGES;
 ```
 
-### Verify Users and Privileges:
+### Verify Users
 
 ```sql
--- Show all users
+-- Check users exist
 SELECT User, Host FROM mysql.user WHERE User LIKE 'cust_%';
 
--- Show privileges for admin
+-- Check privileges
 SHOW GRANTS FOR 'cust_admin'@'localhost';
-
--- Show privileges for staff
 SHOW GRANTS FOR 'cust_staff'@'localhost';
-
--- Show privileges for customer
 SHOW GRANTS FOR 'cust_customer'@'localhost';
 ```
 
-### Test User Access:
+### Test Login
 
 ```bash
-# Test Admin Login
+# Test each user can login
 mysql -u cust_admin -pAdmin@2025 cust
-
-# Test Staff Login
 mysql -u cust_staff -pStaff@2025 cust
-
-# Test Customer Login (after creating view in Part 3)
 mysql -u cust_customer -pCustomer@2025 cust
 ```
 
 ---
 
-## PART 2: Protect Sensitive Data with Encryption
+## PART 2: Protect Sensitive Data (4 points)
 
-### Identified Sensitive Data:
+### Identified Sensitive Data
 
-1. **CreditLimit** - Financial data (credit worthiness)
+1. **CreditLimit** - Financial creditworthiness data
 2. **bal** - Account balance (financial data)
 3. **amount** - Transaction amounts (financial data)
 4. **Name** - Personal Identifiable Information (PII)
-5. **No.** - Account number (should be kept confidential)
+5. **No.** - Account number (confidential identifier)
 
-### Protection Strategy Using Lecture Methods:
-
-1. **Encryption** - Use AES_ENCRYPT with SHA1 key (from lecture Exercise 3)
-2. **Access Control** - Restrict direct table access
-3. **Views** - Provide controlled access to decrypted data
-4. **Input Validation** - Protect against SQL injection
-
-### SQL Statements for Data Protection:
+### Step 1: Modify Columns for Encryption
 
 ```sql
--- PROTECTION 1: Modify columns to store encrypted data (BLOB type)
--- First, backup the original data structure
+-- Change data types to BLOB to store encrypted data
 ALTER TABLE account 
 MODIFY CreditLimit BLOB,
 MODIFY bal BLOB;
 
 ALTER TABLE transaction
 MODIFY amount BLOB;
+```
 
--- PROTECTION 2: Encrypt sensitive financial data using AES with SHA1 key
--- Encrypt CreditLimit in account table
+### Step 2: Encrypt Financial Data
+
+```sql
+-- Encrypt CreditLimit using AES with SHA1 key
 UPDATE account 
 SET CreditLimit = AES_ENCRYPT(CreditLimit, SHA1('creditlimit_key'));
 
--- Encrypt balance (bal) in account table
+-- Encrypt balance
 UPDATE account 
 SET bal = AES_ENCRYPT(bal, SHA1('balance_key'));
 
--- Encrypt amount in transaction table
+-- Encrypt transaction amounts
 UPDATE transaction 
 SET amount = AES_ENCRYPT(amount, SHA1('amount_key'));
+```
 
--- PROTECTION 3: Encrypt account numbers using MD5 (one-way hash)
--- Add a new column for hashed account number
-ALTER TABLE account 
-ADD COLUMN No_hash VARCHAR(32);
+### Step 3: Create Decryption Views for Authorized Users
 
--- Hash the account numbers (one-way encryption)
-UPDATE account 
-SET No_hash = MD5(`No.`);
+```sql
+-- Decrypted account view for staff and admin
+CREATE OR REPLACE VIEW account_decrypted AS
+SELECT 
+    ID,
+    `No.`,
+    Name,
+    CAST(AES_DECRYPT(CreditLimit, SHA1('creditlimit_key')) AS DECIMAL(10,2)) AS CreditLimit,
+    CAST(AES_DECRYPT(bal, SHA1('balance_key')) AS DECIMAL(10,2)) AS bal
+FROM account;
 
--- PROTECTION 4: Create secure password storage example
--- If you had a password field, use SHA1 for one-way hashing
--- Example structure (for reference):
--- CREATE TABLE user_credentials (
---     user_id INT PRIMARY KEY,
---     username VARCHAR(50),
---     password_hash VARCHAR(40),  -- SHA1 produces 40-character hash
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
--- 
--- INSERT INTO user_credentials (user_id, username, password_hash)
--- VALUES (1, 'admin', SHA1('Admin@2025'));
+-- Decrypted transaction view for staff and admin
+CREATE OR REPLACE VIEW transaction_decrypted AS
+SELECT 
+    id,
+    type,
+    CAST(AES_DECRYPT(amount, SHA1('amount_key')) AS DECIMAL(10,2)) AS amount,
+    date,
+    accid
+FROM transaction;
 
--- PROTECTION 5: Revoke Direct Access to Encrypted Tables
--- Customers should not have direct access to account or transaction tables
-REVOKE ALL PRIVILEGES ON cust.account FROM 'cust_customer'@'localhost';
-REVOKE ALL PRIVILEGES ON cust.transaction FROM 'cust_customer'@'localhost';
+-- Grant access to staff and admin only
+GRANT SELECT ON cust.account_decrypted TO 'cust_staff'@'localhost';
+GRANT SELECT ON cust.account_decrypted TO 'cust_admin'@'localhost';
+GRANT SELECT ON cust.transaction_decrypted TO 'cust_staff'@'localhost';
+GRANT SELECT ON cust.transaction_decrypted TO 'cust_admin'@'localhost';
 
--- Customers can only access through the view (granted in Part 3)
 FLUSH PRIVILEGES;
+```
 
--- PROTECTION 6: Prevent SQL Injection - Input Validation Function
--- Create a function to validate account numbers (prevent injection)
+### Step 4: Add Input Validation (SQL Injection Prevention)
+
+```sql
+-- Create validation function to prevent SQL injection
 DELIMITER $$
 CREATE FUNCTION validate_account_input(input_value VARCHAR(255))
 RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
     -- Check if input contains only alphanumeric characters
-    -- Returns TRUE if valid, FALSE if potentially malicious
     IF input_value REGEXP '^[A-Za-z0-9]+$' THEN
         RETURN TRUE;
     ELSE
@@ -210,299 +187,245 @@ END$$
 DELIMITER ;
 ```
 
-### Create Decryption Views for Authorized Users:
+### Verify Encryption
 
 ```sql
--- Create a view that decrypts data for staff (who have proper authorization)
-DROP VIEW IF EXISTS account_decrypted;
-
-CREATE VIEW account_decrypted AS
-SELECT 
-    ID,
-    `No.`,
-    No_hash,
-    Name,
-    CAST(AES_DECRYPT(CreditLimit, SHA1('creditlimit_key')) AS DECIMAL(10,2)) AS CreditLimit,
-    CAST(AES_DECRYPT(bal, SHA1('balance_key')) AS DECIMAL(10,2)) AS bal
-FROM account;
-
--- Grant access to decrypted view for staff and admin only
-GRANT SELECT ON cust.account_decrypted TO 'cust_staff'@'localhost';
-GRANT SELECT ON cust.account_decrypted TO 'cust_admin'@'localhost';
-
--- Create decrypted transaction view
-DROP VIEW IF EXISTS transaction_decrypted;
-
-CREATE VIEW transaction_decrypted AS
-SELECT 
-    id,
-    accid,
-    CAST(AES_DECRYPT(amount, SHA1('amount_key')) AS DECIMAL(10,2)) AS amount
-FROM transaction;
-
--- Grant access to decrypted transaction view
-GRANT SELECT ON cust.transaction_decrypted TO 'cust_staff'@'localhost';
-GRANT SELECT ON cust.transaction_decrypted TO 'cust_admin'@'localhost';
-
-FLUSH PRIVILEGES;
-```
-
-### Verify Encryption:
-
-```sql
--- Check encrypted data (should see BLOB/binary data)
-SELECT ID, Name, CreditLimit, bal FROM account LIMIT 3;
+-- Check encrypted data (should see binary/BLOB data)
+SELECT ID, Name, CreditLimit, bal FROM account;
 
 -- Check decrypted data through view (should see normal numbers)
-SELECT * FROM account_decrypted LIMIT 3;
+SELECT * FROM account_decrypted;
+SELECT * FROM transaction_decrypted;
 
--- Verify hashed account numbers
-SELECT `No.`, No_hash FROM account LIMIT 3;
-
--- Test the validation function
-SELECT validate_account_input('12345');  -- Returns 1 (TRUE - valid)
-SELECT validate_account_input('123 OR 1=1');  -- Returns 0 (FALSE - SQL injection attempt)
+-- Test validation function
+SELECT validate_account_input('N01');           -- Returns 1 (valid)
+SELECT validate_account_input('N01; DROP TABLE'); -- Returns 0 (invalid)
 ```
 
 ---
 
-## PART 3: Create View for Customers
+## PART 3: Create View for Customers (4 points)
 
-### View Requirements (Based on Lecture Exercise 2):
-- Contains: account no., name, balance (decrypted)
-- Provides read-only access for customers
-- Hides sensitive information (CreditLimit)
-- Uses WITH CHECK OPTION for data integrity
-
-### SQL Statements to Create View:
+### Create Customer View
 
 ```sql
--- Drop view if it already exists (for clean creation)
+-- Drop if exists
 DROP VIEW IF EXISTS account_view;
 
--- Create the view with account number, name, and decrypted balance
--- This view decrypts the balance for customer viewing
+-- Create view with account no., name, and balance only
 CREATE VIEW account_view AS
 SELECT 
     `No.` AS account_no,
     Name AS name,
     CAST(AES_DECRYPT(bal, SHA1('balance_key')) AS DECIMAL(10,2)) AS balance
 FROM account
-WITH CHECK OPTION;  -- Ensures updates through view satisfy the WHERE clause
+WITH CHECK OPTION;
+```
 
--- Grant SELECT permission to customers on this view
+**Note:** The view decrypts the balance so customers can see their actual balance, but hides sensitive CreditLimit information.
+
+### Grant Access to View
+
+```sql
+-- Grant SELECT permission to customer
 GRANT SELECT ON cust.account_view TO 'cust_customer'@'localhost';
 
--- Grant SELECT permission to staff on this view  
+-- Also grant to staff (they can use this simplified view)
 GRANT SELECT ON cust.account_view TO 'cust_staff'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
 
-### Enhanced Security View (Optional - Based on Lecture Concepts):
+### Verify View
 
 ```sql
--- Create a more secure view that masks part of the account number
-DROP VIEW IF EXISTS account_view_secure;
-
-CREATE VIEW account_view_secure AS
-SELECT 
-    CONCAT('****', RIGHT(`No.`, 4)) AS masked_account_no,
-    Name AS name,
-    CAST(AES_DECRYPT(bal, SHA1('balance_key')) AS DECIMAL(10,2)) AS balance
-FROM account;
-
--- Grant access to this masked view
-GRANT SELECT ON cust.account_view_secure TO 'cust_customer'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### Verify the View:
-
-```sql
--- Check if view exists
+-- Check view exists
 SHOW FULL TABLES WHERE Table_type = 'VIEW';
 
--- View the structure
+-- Check view structure
 DESCRIBE account_view;
 
--- Test the view as admin
+-- Test view data
 SELECT * FROM account_view;
-
--- Test modification through view (based on lecture Exercise 2)
--- Update a customer's balance through the view
-UPDATE account_view 
-SET balance = 15000.00 
-WHERE account_no = '12345';  -- Replace with actual account number
-
--- Note: This will encrypt the new value automatically due to triggers
--- (if implemented) or requires manual encryption
+-- Should show: account_no='N01', name='John Morris', balance=13000.00
 ```
 
 ---
 
-## Complete Testing Procedure
+## Testing the Security Implementation
 
-### Test as Admin:
+### Test as Admin (Full Access)
 
 ```sql
--- Login as admin
--- mysql -u cust_admin -pAdmin@2025 cust
+-- Login: mysql -u cust_admin -pAdmin@2025 cust
 
--- Admin can view encrypted data
-SELECT * FROM account LIMIT 3;
+-- Can access encrypted tables
+SELECT * FROM account;
 
--- Admin can view decrypted data
-SELECT * FROM account_decrypted LIMIT 3;
-SELECT * FROM transaction_decrypted LIMIT 3;
+-- Can access decrypted views
+SELECT * FROM account_decrypted;
+SELECT * FROM transaction_decrypted;
 
--- Admin can view customer view
-SELECT * FROM account_view LIMIT 3;
+-- Can access customer view
+SELECT * FROM account_view;
 
--- Admin can modify encrypted data
+-- Can modify data
 UPDATE account 
 SET bal = AES_ENCRYPT('14000', SHA1('balance_key')) 
 WHERE ID = 105;
 ```
 
-### Test as Staff:
+### Test as Staff (CRUD Access)
 
 ```sql
--- Login as staff
--- mysql -u cust_staff -pStaff@2025 cust
+-- Login: mysql -u cust_staff -pStaff@2025 cust
 
--- Staff can view through decrypted views
+-- Can view decrypted data
 SELECT * FROM account_decrypted;
 SELECT * FROM transaction_decrypted;
 
--- Staff can access the customer view
+-- Can view customer view
 SELECT * FROM account_view;
 
--- Staff can modify data (but sees encrypted values in raw table)
+-- Can modify account data
 UPDATE account 
-SET bal = AES_ENCRYPT('13500', SHA1('balance_key')) 
+SET bal = AES_ENCRYPT('15000', SHA1('balance_key')) 
 WHERE ID = 105;
 
--- Staff CANNOT access encrypted tables directly (should see encrypted data)
-SELECT * FROM account LIMIT 3;  -- Will show BLOB data
+-- Can insert new transaction
+INSERT INTO transaction (type, amount, date, accid) 
+VALUES ('D', AES_ENCRYPT('500', SHA1('amount_key')), NOW(), 105);
 ```
 
-### Test as Customer:
+### Test as Customer (Read-Only View Access)
 
 ```sql
--- Login as customer
--- mysql -u cust_customer -pCustomer@2025 cust
+-- Login: mysql -u cust_customer -pCustomer@2025 cust
 
--- Customer can ONLY view the account_view (sees decrypted balance)
+-- Can ONLY view the account_view
 SELECT * FROM account_view;
+-- ✓ Success: Shows account_no, name, balance
 
--- Customer can also use the secure masked view
-SELECT * FROM account_view_secure;
+-- CANNOT access tables directly
+SELECT * FROM account;
+-- ✗ Error: Access denied
 
--- Customer CANNOT access tables directly (should get permission denied)
-SELECT * FROM account;  -- ERROR: Access denied
-SELECT * FROM transaction;  -- ERROR: Access denied
+SELECT * FROM transaction;
+-- ✗ Error: Access denied
 
--- Customer CANNOT access decrypted views (should get permission denied)
-SELECT * FROM account_decrypted;  -- ERROR: Access denied
+-- CANNOT access decrypted views
+SELECT * FROM account_decrypted;
+-- ✗ Error: Access denied
 
--- Customer CANNOT modify anything
-UPDATE account_view SET balance = 20000;  -- ERROR: Access denied
+-- CANNOT modify data
+UPDATE account_view SET balance = 20000;
+-- ✗ Error: Access denied
 ```
 
-### Test SQL Injection Protection:
+### Test SQL Injection Protection
 
 ```sql
--- As admin, test the validation function
-SELECT validate_account_input('12345');  -- Valid input: 1
-SELECT validate_account_input('admin'' OR ''1''=''1');  -- Injection attempt: 0
-SELECT validate_account_input('105 OR 1=1');  -- Injection attempt: 0
-SELECT validate_account_input('DROP TABLE account');  -- Injection attempt: 0
+-- Valid input
+SELECT validate_account_input('N01');
+-- Returns: 1 (TRUE)
+
+-- SQL injection attempts
+SELECT validate_account_input('N01 OR 1=1');
+-- Returns: 0 (FALSE)
+
+SELECT validate_account_input('N01; DROP TABLE account');
+-- Returns: 0 (FALSE)
+
+SELECT validate_account_input("admin' OR '1'='1");
+-- Returns: 0 (FALSE)
 ```
 
 ---
 
 ## Summary of Implementation
 
-### Part 1: User Accounts (2 points)
-- ✅ Created 3 users: cust_admin, cust_staff, cust_customer
-- ✅ Implemented **Mandatory Access Control (MAC)** with security levels:
-  - Admin: TS (Top Secret) - Full control (ALL PRIVILEGES)
-  - Staff: S (Secret) - CRUD operations on account and transaction tables
-  - Customer: C (Confidential) - Read-only access through view
-- ✅ Used **Account Level** and **Relationship Level** access control from lecture
+### Part 1: User Accounts ✓ (2 points)
+- Created 3 users with appropriate security levels
+- Implemented Mandatory Access Control (MAC)
+- Admin (TS): ALL PRIVILEGES
+- Staff (S): SELECT, INSERT, UPDATE, DELETE
+- Customer (C): SELECT on view only
 
-### Part 2: Sensitive Data Protection (4 points)
-- ✅ Identified sensitive data: CreditLimit, bal, amount, Name, No.
-- ✅ Applied **AES_ENCRYPT** with **SHA1** key for financial data (from lecture Exercise 3)
-- ✅ Used **MD5** for one-way hashing of account numbers
-- ✅ Modified columns to BLOB type to store encrypted data
-- ✅ Created decryption views for authorized staff/admin
-- ✅ Implemented input validation function to prevent **SQL Injection**
-- ✅ Restricted direct table access for customers
-- ✅ Applied **Discretionary Access Control (DAC)** principles
+### Part 2: Sensitive Data Protection ✓ (4 points)
+- Identified 5 sensitive data fields
+- Applied AES encryption with SHA1 keys for reversible data
+- Created decrypted views for authorized users
+- Implemented input validation to prevent SQL injection
+- Restricted direct table access
 
-### Part 3: View Creation (4 points)
-- ✅ Created account_view with account_no, name, decrypted balance
-- ✅ Used **WITH CHECK OPTION** (from lecture Exercise 2)
-- ✅ Granted appropriate access to customers and staff
-- ✅ Hides sensitive information (CreditLimit and encrypted values)
-- ✅ Provides read-only access layer
-- ✅ Optional: Created masked view for enhanced security
+### Part 3: View Creation ✓ (4 points)
+- Created account_view with account_no, name, balance
+- Used WITH CHECK OPTION for data integrity
+- Granted appropriate access to customers
+- Decrypts balance for readability while hiding sensitive data
 
 ---
 
-## Security Concepts Applied from Lecture
+## Security Concepts Applied
 
-### 1. Encryption Methods Used:
-- **AES_ENCRYPT/AES_DECRYPT** - Symmetric encryption for reversible data (balance, credit limit, amounts)
-- **SHA1** - Secure hash algorithm used as encryption key
-- **MD5** - One-way hashing for account numbers
+**Encryption Methods:**
+- **AES_ENCRYPT/AES_DECRYPT**: Symmetric encryption for financial data (reversible)
+- **SHA1**: Hash function used as encryption key
+- **REGEXP**: Pattern matching for input validation
 
-### 2. Access Control Models:
-- **DAC (Discretionary Access Control)** - Granting specific privileges
-- **MAC (Mandatory Access Control)** - Security level classification (TS > S > C > U)
+**Access Control:**
+- **MAC (Mandatory Access Control)**: Security level hierarchy
+- **DAC (Discretionary Access Control)**: Granular privilege assignment
+- **Principle of Least Privilege**: Users have minimum necessary access
 
-### 3. SQL Injection Prevention:
-- Input validation function
-- Parameterized approach through stored procedures
-
-### 4. View Implementation:
-- **WITH CHECK OPTION** for data integrity
-- Views for data abstraction and security
-- Decryption views for authorized users only
-
-### 5. Best Practices Applied:
-- Changed default user names
-- Strong password requirements
-- Principle of least privilege
-- Regular privilege flushing
-- Separation of duties
+**Protection Layers:**
+1. User authentication (passwords)
+2. Privilege restrictions (GRANT statements)
+3. Data encryption (AES)
+4. View abstraction (limited data exposure)
+5. Input validation (SQL injection prevention)
 
 ---
 
 ## Additional Notes
 
-### Why These Encryption Methods?
+### Why This Encryption Strategy?
 
-1. **AES_ENCRYPT** - Used for financial data because:
-   - It's reversible (staff/admin need to see actual amounts)
-   - Symmetric encryption is fast
-   - Strong security for sensitive data
+- **AES for financial data**: Needs to be decrypted for authorized viewing
+- **SHA1 as key**: Consistent key generation from passphrase
+- **BLOB storage**: Binary format for encrypted data
 
-2. **SHA1 as Key** - Used because:
-   - Creates consistent key from password phrase
-   - One-way hash adds extra security layer
-   - Easy to implement and remember
+### Security Considerations
 
-3. **MD5 for Account Numbers** - Used because:
-   - One-way hash (cannot be reversed)
-   - Quick comparison for validation
-   - Protects original account numbers
+**Strengths:**
+- Multi-layer security approach
+- Clear separation of duties
+- Encrypted at-rest data
+- SQL injection prevention
 
-### Security Trade-offs
+**Limitations:**
+- Keys are hardcoded (use proper key management in production)
+- No audit logging implemented
+- Encryption adds processing overhead
+- Staff sees encrypted raw data (must use views)
 
-- **Performance**: Encryption/decryption adds processing overhead
-- **Usability**: Staff must use decrypted views instead of raw tables
-- **Key Management**: SHA1 keys are hardcoded (in production, use proper key management)
-- **Backward Compatibility**: Encrypted columns can't be directly queried without decryption
+---
+
+## Quick Reference Commands
+
+```sql
+-- Show all users
+SELECT User, Host FROM mysql.user;
+
+-- Show current user
+SELECT CURRENT_USER();
+
+-- Show privileges for a user
+SHOW GRANTS FOR 'username'@'localhost';
+
+-- Show all views
+SHOW FULL TABLES WHERE Table_type = 'VIEW';
+
+-- Test decryption manually
+SELECT CAST(AES_DECRYPT(bal, SHA1('balance_key')) AS DECIMAL(10,2)) FROM account;
+```
