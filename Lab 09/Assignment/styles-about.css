@@ -1,0 +1,412 @@
+/* ========================================
+   CSS326 Laboratory Assignment #9
+   Student: Nonprawch Intakaew
+   Student ID: 6622772422
+   ======================================== */
+
+/* ========================================
+   1. RESET AND BASE STYLES
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* ========================================
+   2. HEADER NAVIGATION MENU (Exercise 4 Style)
+   ======================================== */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
+
+/* ========================================
+   3. MAIN CONTENT SECTION - DESKTOP LAYOUT
+   ======================================== */
+.content {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+/* ========================================
+   4. LEFT PANEL (30% width on desktop)
+   Profile Image, Name, Student ID, Tagline
+   ======================================== */
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    flex-basis: 30%;
+}
+
+.profile-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.name {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.student-id {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.tagline {
+    font-style: italic;
+    color: #555;
+    margin-top: auto;
+    padding: 20px;
+    font-size: 0.95em;
+}
+
+/* ========================================
+   5. RIGHT PANEL - BIO SECTION (70% width on desktop)
+   About Me, Biography, Skills, Projects, Contact
+   ======================================== */
+.bio {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    flex-basis: 70%;
+}
+
+.bio h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #000;
+    text-align: left;
+}
+
+.bio h3 {
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #333;
+    text-align: left;
+}
+
+.bio p {
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: #444;
+    text-align: left;
+}
+
+/* ========================================
+   6. OPTIONAL: SKILLS LIST STYLING
+   ======================================== */
+.skills-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    text-align: left;
+    padding-left: 0;
+}
+
+.skills-list li {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+/* ========================================
+   7. OPTIONAL: PROJECTS LIST STYLING
+   ======================================== */
+.projects-list {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.projects-list li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 1em;
+    color: #444;
+}
+
+/* ========================================
+   8. OPTIONAL: CONTACT LIST STYLING
+   ======================================== */
+.contact-list {
+    list-style: none;
+    text-align: left;
+    padding-left: 0;
+}
+
+.contact-list li {
+    margin-bottom: 8px;
+    font-size: 1em;
+    color: #444;
+}
+
+/* ========================================
+   9. RESPONSIVE DESIGN - ASSIGNMENT 2
+   Media Queries for Mobile Layout
+   ======================================== */
+
+/* ----------------------------------------
+   TABLET VIEW (768px and below)
+   ---------------------------------------- */
+@media screen and (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+    
+    .left-panel {
+        flex-basis: 100%;
+    }
+    
+    .bio {
+        flex-basis: 100%;
+    }
+    
+    .skills-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ----------------------------------------
+   MOBILE VIEW (600px and below)
+   Main responsive breakpoint for Assignment 2
+   ---------------------------------------- */
+@media screen and (max-width: 600px) {
+    /* Body and content stack vertically */
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .content {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+    
+    /* ========================================
+       LEFT PANEL - MOBILE ADJUSTMENTS
+       ======================================== */
+    .left-panel {
+        flex-basis: 100%;
+        width: 100%;
+        padding: 20px;
+        order: 1;
+    }
+    
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 15px;
+    }
+    
+    .name {
+        font-size: 1.8em;
+        margin-bottom: 8px;
+    }
+    
+    .student-id {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+    
+    .tagline {
+        font-size: 0.9em;
+        padding: 15px 10px;
+        margin-top: 15px;
+    }
+    
+    /* ========================================
+       RIGHT PANEL (BIO) - MOBILE ADJUSTMENTS
+       ======================================== */
+    .bio {
+        flex-basis: 100%;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        order: 2;
+    }
+    
+    .bio h2 {
+        font-size: 1.8em;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .bio h3 {
+        font-size: 1.3em;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .bio p {
+        font-size: 1em;
+        line-height: 1.6;
+        text-align: justify;
+        margin-bottom: 12px;
+    }
+    
+    /* ========================================
+       NAVIGATION MENU - MOBILE ADJUSTMENTS
+       ======================================== */
+    .menu {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0;
+    }
+    
+    .menu a {
+        padding: 12px 15px;
+        font-size: 0.9em;
+    }
+    
+    /* ========================================
+       LISTS - MOBILE ADJUSTMENTS
+       ======================================== */
+    .skills-list {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .skills-list li {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+    
+    .projects-list {
+        padding-left: 15px;
+    }
+    
+    .projects-list li {
+        font-size: 0.9em;
+        margin-bottom: 8px;
+    }
+    
+    .contact-list li {
+        font-size: 0.9em;
+        margin-bottom: 6px;
+        text-align: center;
+    }
+}
+
+/* ----------------------------------------
+   SMALL MOBILE VIEW (400px and below)
+   Extra small devices optimization
+   ---------------------------------------- */
+@media screen and (max-width: 400px) {
+    .profile-img {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .name {
+        font-size: 1.5em;
+    }
+    
+    .student-id {
+        font-size: 0.85em;
+    }
+    
+    .tagline {
+        font-size: 0.85em;
+        padding: 12px 8px;
+    }
+    
+    .bio h2 {
+        font-size: 1.5em;
+    }
+    
+    .bio h3 {
+        font-size: 1.2em;
+    }
+    
+    .bio p {
+        font-size: 0.95em;
+    }
+    
+    .menu a {
+        font-size: 0.85em;
+        padding: 10px 12px;
+    }
+    
+    .left-panel,
+    .bio {
+        padding: 15px;
+    }
+}
+
+/* ========================================
+   10. PRINT STYLES (Optional)
+   ======================================== */
+@media print {
+    header {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .menu a {
+        color: black !important;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .left-panel,
+    .bio {
+        background-color: white !important;
+    }
+}
