@@ -478,7 +478,7 @@ Product Table:
 - **Relation view** (for relationships)
 
 **Field Information:**
-- # (order number)
+- \# (order number)
 - Name of field
 - Type (data type)
 - Collation
