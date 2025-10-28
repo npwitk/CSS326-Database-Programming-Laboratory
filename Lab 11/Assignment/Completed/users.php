@@ -40,6 +40,25 @@
 		display: block;
 		margin: 0 auto;
 	}
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+	ul li {
+		background-color: #F27C38;
+		margin: 5px 0;
+		padding: 10px 20px;
+	}
+	ul li a {
+		color: black;
+		text-decoration: none;
+		font-weight: bold;
+		display: block;
+	}
+	ul li:hover {
+		background-color: #F2C063;
+	}
 </style>
 
 <body>
@@ -56,9 +75,9 @@
 	session_start();
 
 	// Get input from form
-	$input_username = $_POST["username"];
-	$input_pass = $_POST["passwd"];
-	$input_cpasswd = $_POST["cpasswd"];
+	$input_username = isset($_POST["username"]) ? $_POST["username"] : "";
+	$input_pass = isset($_POST["passwd"]) ? $_POST["passwd"] : "";
+	$input_cpasswd = isset($_POST["cpasswd"]) ? $_POST["cpasswd"] : "";
 
 	// Check if username is Admin and password is 1234 and confirm password is 1234
 	if($input_username == $username && $input_pass == $pass && $input_cpasswd == $pass1)	

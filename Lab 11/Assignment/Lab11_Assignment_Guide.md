@@ -73,10 +73,10 @@ $username = "Admin";
 $pass = "1234";
 $pass1 = "1234";
 
-// Get form data
-$input_username = $_POST["username"];
-$input_pass = $_POST["passwd"];
-$input_cpasswd = $_POST["cpasswd"];
+// Get form data with isset() checks to prevent warnings
+$input_username = isset($_POST["username"]) ? $_POST["username"] : "";
+$input_pass = isset($_POST["passwd"]) ? $_POST["passwd"] : "";
+$input_cpasswd = isset($_POST["cpasswd"]) ? $_POST["cpasswd"] : "";
 
 // Check credentials
 if ($input_username == $username && $input_pass == $pass && $input_cpasswd == $pass1) {
@@ -202,6 +202,27 @@ Add these elements in the appropriate sections:
     img {
         display: block;
         margin: 0 auto;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px auto;
+        max-width: 800px;
+    }
+    ul li {
+        background-color: #F27C38;
+        margin: 5px 0;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+    ul li a {
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+        display: block;
+    }
+    ul li:hover {
+        background-color: #F2C063;
     }
 </style>
 
@@ -348,6 +369,27 @@ Add these elements in the appropriate sections:
         display: block;
         margin: 0 auto;
     }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px auto;
+        max-width: 800px;
+    }
+    ul li {
+        background-color: #F27C38;
+        margin: 5px 0;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+    ul li a {
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+        display: block;
+    }
+    ul li:hover {
+        background-color: #F2C063;
+    }
 </style>
 
 <body>
@@ -357,10 +399,10 @@ Add these elements in the appropriate sections:
     $pass = "1234";
     $pass1 = "1234";
     
-    // Get form data
-    $input_username = $_POST["username"];
-    $input_pass = $_POST["passwd"];
-    $input_cpasswd = $_POST["cpasswd"];
+    // Get form data with isset() checks to prevent warnings
+    $input_username = isset($_POST["username"]) ? $_POST["username"] : "";
+    $input_pass = isset($_POST["passwd"]) ? $_POST["passwd"] : "";
+    $input_cpasswd = isset($_POST["cpasswd"]) ? $_POST["cpasswd"] : "";
     
     // Check credentials
     if ($input_username == $username && $input_pass == $pass && $input_cpasswd == $pass1) {
@@ -534,14 +576,25 @@ The bonus feature implements a timed redirect system:
 
 ## Common Issues and Solutions
 
-### Issue 1: Date Input Not Showing
+### Issue 1: Undefined Array Key Warning
+
+**Problem:** Warning messages like "Undefined array key 'username'" or "Undefined array key 'passwd'"
+
+**Solution:** Use `isset()` to check if POST variables exist:
+```php
+$input_username = isset($_POST["username"]) ? $_POST["username"] : "";
+$input_pass = isset($_POST["passwd"]) ? $_POST["passwd"] : "";
+$input_cpasswd = isset($_POST["cpasswd"]) ? $_POST["cpasswd"] : "";
+```
+
+### Issue 2: Date Input Not Showing
 
 **Solution:** Ensure the input type is `date`:
 ```html
 <input type="date" name="birth">
 ```
 
-### Issue 2: Age Calculation Error
+### Issue 3: Age Calculation Error
 
 **Solution:** Check DateTime object creation and diff() usage:
 ```php
@@ -551,7 +604,7 @@ $age = $today->diff($birthDate);
 echo $age->y; // Access years property
 ```
 
-### Issue 3: Session Not Working
+### Issue 4: Session Not Working
 
 **Solution:** Ensure `session_start()` is at the very beginning:
 ```php
@@ -561,7 +614,7 @@ session_start();
 ?>
 ```
 
-### Issue 4: Refresh Not Working
+### Issue 5: Refresh Not Working
 
 **Solution:** Ensure no output before `header()`:
 ```php
