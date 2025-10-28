@@ -31,7 +31,7 @@
 
 **Client Side:**
 - User interacts through web browser
-- URLs: `url.google.com` and `url.apple.com`
+- URLs: `google.com` and `apple.com`
 
 **Host Side:**
 - Web Server containing:
