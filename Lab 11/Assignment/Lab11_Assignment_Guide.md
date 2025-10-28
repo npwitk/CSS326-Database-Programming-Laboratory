@@ -168,6 +168,10 @@ Add these elements in the appropriate sections:
 <style>
     body {
         font-family: Arial;
+        background-image: url('back.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
     }
     h1 {
         font-family: Arial;
@@ -194,6 +198,10 @@ Add these elements in the appropriate sections:
         font-weight: bold;
         font-size: 120%;
         text-align: center;
+    }
+    img {
+        display: block;
+        margin: 0 auto;
     }
 </style>
 
@@ -308,6 +316,10 @@ Add these elements in the appropriate sections:
 <style>
     body {
         font-family: Arial;
+        background-image: url('back.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
     }
     h1 {
         font-family: Arial;
@@ -331,6 +343,10 @@ Add these elements in the appropriate sections:
         font-weight: bold;
         font-size: 120%;
         text-align: center;
+    }
+    img {
+        display: block;
+        margin: 0 auto;
     }
 </style>
 
@@ -499,7 +515,8 @@ echo $interval->d . " days";
 1. **add_user.html** - Modified form with birth date field
 2. **users.php** - Complete PHP processing script
 3. **default1.css** - CSS stylesheet (provided, no changes needed)
-4. **avatar.png** - User avatar image (need to create/download)
+4. **avatar.png** - User avatar image (need to create/download, 240px height recommended)
+5. **back.jpg** - Background image for successful login page (need to create/download)
 
 ---
 
@@ -561,6 +578,7 @@ if ($elapsed_time < 30) {
 - [ ] users.php completed with all required functionality
 - [ ] default1.css included
 - [ ] avatar.png image included
+- [ ] back.jpg background image included
 - [ ] All files compressed into single ZIP file
 - [ ] Tested with correct credentials
 - [ ] (Bonus) Tested with incorrect credentials
@@ -570,6 +588,7 @@ if ($elapsed_time < 30) {
 ## Expected Output Summary
 
 ### Successful Login Shows:
+- **Background image (back.jpg)** covering the entire page
 - Welcome message with user's title and name
 - Avatar image (240px height)
 - Profile information including:
