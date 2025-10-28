@@ -8,3 +8,5 @@
 - Lab 07 - Store Procedure, Functions & Triggers (Sep 30)
 - Lab 08 - Database Security (Oct 7)
 - Lab 09 - Static Website (HTML & CSS) (Oct 14)
+- Project Proposal (Oct 21)
+- Lab 11 - Dynamic Website with PHP (Oct 28)
