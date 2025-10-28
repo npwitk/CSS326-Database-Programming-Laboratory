@@ -108,30 +108,6 @@ This repository is organized by lab sessions, with each folder containing exerci
 - Database-driven content management
 - User authentication and session management
 
-## Learning Outcomes
-
-By the end of this course, students will be able to:
-
-1. Design and implement relational databases using proper methodology
-2. Develop desktop applications with database integration using C# and Windows Forms
-3. Write complex SQL queries including joins, subqueries, and aggregate functions
-4. Create and use stored procedures, functions, and triggers
-5. Implement database security measures and prevent SQL injection attacks
-6. Build static and dynamic websites using HTML, CSS, and PHP
-7. Integrate databases with web applications using PHP and MySQL
-8. Apply full-stack development principles to create complete applications
-
-## Sample Databases
-
-The repository includes several sample databases for practice:
-
-- **Northwind** - E-commerce/trading company database
-- **Bank** - Banking system with accounts and transactions
-- **Classic Models** - Model car retail database
-- **School Registration** - Academic registration system
-- **Library** - Library management system
-- **Employee** - HR and employee management
-
 ## Notes
 
 Each lab folder contains:
