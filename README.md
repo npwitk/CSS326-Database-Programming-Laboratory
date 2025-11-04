@@ -16,7 +16,8 @@ This repository is organized by lab sessions, with each folder containing exerci
 ├── Lab 07                     # Stored Procedures, Functions & Triggers
 ├── Lab 08                     # Database Security
 ├── Lab 09                     # Static Website (HTML & CSS)
-└── Lab 11                     # Dynamic Website with PHP
+├── Lab 11                     # Dynamic Website with PHP
+└── Lab 12                     # Database Programming with PHP
 ```
 
 ## Topics Covered
@@ -93,6 +94,7 @@ This repository is organized by lab sessions, with each folder containing exerci
 | 10   | Oct 14 | Lab 09 - Static Website (HTML & CSS)           |
 | 11   | Oct 21 | Project Proposal                               |
 | 12   | Oct 28 | Lab 11 - Dynamic Website with PHP              |
+| 13   | Nov 4  | Lab 12 - Database Programming with PHP         |
 
 ## Project Types
 
