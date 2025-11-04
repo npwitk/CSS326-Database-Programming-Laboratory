@@ -1,33 +1,30 @@
-# Lab 12 - Database Programming with PHP
+# Lab 12: Database Programming with PHP
 ## 1. Files as a Database
 
 ### Overview
 - One of the simplest forms of database
-- Data is stored in text files
-- Can be read and written using PHP file functions
+- Uses text files to store data
+- Data can be saved line by line
 
 ### Key PHP File Functions
 
-#### `fopen()`
-- Opens a file or URL
+#### `fopen()` - Opens a file or URL
 - **Modes:**
   - `r` - Read only
-  - `r+` - Read/write
+  - `r+` - Read/Write
   - `w` - Write only
-  - `w+` - Read/write and makes a new file if there is none
-  - `a` - Append (check documentation)
-  - `a+` - Append with read/write
+  - `w+` - Read/Write and makes a new file if there is none
+  - `a` - Append
+  - `a+` - Append and read
 
-#### `feof()`
-- Checks if the "end-of-file" (EOF) has been reached for an open file
+#### `feof()` - Checks if the "end-of-file" (EOF) has been reached
 
-#### `fgets()`
-- Returns a line from an open file
+#### `fgets()` - Returns a line from an open file
 
-#### `fclose()`
-- Closes an open file
+#### `fclose()` - Closes an open file
 
-### Example Code Structure
+### Example: Reading from a file
+
 ```php
 <?php
 $file = fopen("Web_dev.txt", "r");
@@ -38,7 +35,7 @@ fclose($file);
 ?>
 ```
 
-### Technology Stack Reference
+### Common Acronyms Reference
 - **AJAX** = Asynchronous JavaScript and XML
 - **CSS** = Cascading Style Sheets
 - **HTML** = Hyper Text Markup Language
@@ -49,17 +46,8 @@ fclose($file);
 - **SVG** = Scalable Vector Graphics
 - **XML** = EXtensible Markup Language
 
-### Practical Example: Simple File Database
+### Complete Example: Simple File Database
 
-#### HTML Form
-```html
-<form action="simple_filedb.php" method="POST">
-    <textarea name="note" cols="30" rows="5"></textarea>
-    <input type="submit" value="Save to DB" name="submit">
-</form>
-```
-
-#### PHP Processing
 ```php
 <?php
 if(isset($_POST['submit'])) {
@@ -68,51 +56,52 @@ if(isset($_POST['submit'])) {
     fclose($file);
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple File DB</title>
+</head>
+<body>
+    <p style="border:solid 1px gray;background-color:#EEEEEE">
+        <?php
+        readfile("mydb.txt");
+        ?>
+    </p>
+    <hr/>
+    <form action="simple_filedb.php" method="POST">
+        <b>Note</b>: <textarea name="note" cols="30" rows="5"></textarea> <br>
+        <input type="submit" value="Save to DB" name="submit">
+    </form>
+</body>
+</html>
 ```
 
-#### Reading and Displaying
-```php
-<?php
-readfile("mydb.txt");
-?>
-```
-
-**Result Flow:**
-- User enters text: "Change me!"
-- POST data: `note=Change me!`
-- Saved to file: `mydb.txt` contains "Change me!"
-- Displayed on page: "Change me!"
+**How it works:**
+- When form is submitted with `POST note=Change me!`
+- Content is saved to `mydb.txt`
+- File content is displayed on page reload
 
 ---
 
 ## 2. Connect to MySQL via PHP
 
-### Connection Workflow
+### Connection Flow Diagram
 
-```
-Start
-  ↓
-Create Connection for Needed Database
-  ↓
-Send Needed SQL commands
-  ↓
-Receiving Data and Processing Results
-  ↓
-More command? → Yes (loop back)
-  ↓ No
-Closing Connection
-  ↓
-END
-```
+1. **Start**
+2. **Create Connection for Needed Database**
+3. **Send Needed SQL commands** (loop if more commands)
+4. **Receiving Data and Processing Results**
+5. **More command?** (Yes → back to step 3, No → continue)
+6. **Closing Connection**
+7. **END**
 
-### Opening a Connection
+### Creating a Connection
 
-#### Visual Representation
-```
-PHP → [new mysqli(...) creates a SQL Connection pipe] → MySQL
-```
+- `new mysqli(...)` creates a SQL Connection pipe
+- Establishes a communication channel between PHP and MySQL
 
-### Connection Code Example
+### Connection Code
 
 ```php
 <?php
@@ -123,18 +112,17 @@ if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
-// All subsequent queries are done through $mysqli object
+// All subsequent queries are done through $mysqli object.
 // ...
 
 $mysqli->close();
 ?>
 ```
 
-**Key Points:**
-- Use `new mysqli()` to create connection
-- Parameters: hostname, username, password, database name
-- Always check for connection errors using `connect_errno`
-- Close connection when done with `close()`
+**Important Notes:**
+- Replace `'user'`, `'password'`, and `'dbname'` with actual credentials
+- Check for connection errors using `connect_errno`
+- Always close the connection when done
 
 ---
 
@@ -142,12 +130,11 @@ $mysqli->close();
 
 ### Sending Queries to MySQL
 
-#### Creating a Table Example
+#### Example: Creating a Table
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'user', 'password', 'dbname');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
@@ -167,7 +154,6 @@ if($mysqli->query($q)) {
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
@@ -181,7 +167,6 @@ $recs = array(
 
 foreach($recs as $r) {
     $q = "INSERT INTO product(p_name, p_price) VALUES('$r[0]', $r[1])";
-    
     if(!$mysqli->query($q)) {
         echo "INSERT failed. Error: ".$mysqli->error;
         break;
@@ -190,26 +175,21 @@ foreach($recs as $r) {
 ?>
 ```
 
-**Result:**
-| p_id | p_name  | p_price |
-|------|---------|---------|
-| 1    | Pencil  | 10      |
-| 2    | Eraser  | 5       |
-| 3    | Mouse   | 600     |
-| 4    | Printer | 4000    |
+**Result:** Creates records with auto-incremented IDs:
+- 1, Pencil, 10
+- 2, Eraser, 5
+- 3, Mouse, 600
+- 4, Printer, 4000
 
 ---
 
 ## 4. Retrieve Data Using PHP
 
-### Retrieve Result Sets from MySQL
-
-#### Basic Query Example
+### Basic Query and Display
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
@@ -225,7 +205,7 @@ if($result = $mysqli->query('show tables')) {
 ?>
 ```
 
-**Output Example:**
+**Output:**
 ```
 advisor
 instructor
@@ -233,27 +213,25 @@ product
 student
 ```
 
-### Display Results in a Table
+### Display Results in HTML Table
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "select p_name, p_price from product where p_price > 100;";
-
 if($result = $mysqli->query($q)) {
     echo '<table border="1">';
     echo '<tr><th>Name</th><th>Price</th></tr>';
     
     while($row = $result->fetch_array()) {
-        echo '<tr>';
-        echo '<td>'.$row['p_name'].'</td>';
-        echo '<td>'.$row['p_price'].'</td>';
-        echo '</tr>';
+        echo "<tr>";
+        echo "<td>".$row['p_name']."</td>";
+        echo "<td>".$row['p_price']."</td>";
+        echo "</tr>";
     }
     
     echo '</table>';
@@ -265,23 +243,21 @@ if($result = $mysqli->query($q)) {
 ```
 
 **Output:**
-| Name    | Price |
-|---------|-------|
-| Mouse   | 600   |
-| Printer | 4000  |
+| Name | Price |
+|------|-------|
+| Mouse | 600 |
+| Printer | 4000 |
 
-### Get the Number of Rows
+### Get Number of Rows
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "select p_id from product where p_name like 'P%';";
-
 if($result = $mysqli->query($q)) {
     $count = $result->num_rows;
     echo "There are $count products starting with P.";
@@ -292,23 +268,18 @@ if($result = $mysqli->query($q)) {
 ?>
 ```
 
-**Output:**
-```
-There are 2 products starting with P.
-```
+**Output:** `There are 2 products starting with P.`
 
-### Get the Number of Columns
+### Get Number of Columns
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "select * from Product limit 1;";
-
 if($result = $mysqli->query($q)) {
     $count = $result->field_count;
     echo "There are $count columns.";
@@ -319,30 +290,23 @@ if($result = $mysqli->query($q)) {
 ?>
 ```
 
-**Output:**
-```
-There are 3 columns.
-```
+**Output:** `There are 3 columns.`
 
-### Seek a Row in the Result Set
+### Seek to Specific Row
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = 'select p_name, p_price from product order by p_price limit 3;';
-
 if($result = $mysqli->query($q)) {
     // Seek to the third row (row index starts from 0)
     $result->data_seek(2);
     $row = $result->fetch_array();
-    
     echo $row['p_name']." has the third lowest price which is ".$row['p_price'];
-    
     $result->free();
 } else {
     echo "Query failed: ".$mysqli->error;
@@ -350,52 +314,43 @@ if($result = $mysqli->query($q)) {
 ?>
 ```
 
-**Output:**
-```
-Mouse has the third lowest price which is 600
-```
+**Output:** `Mouse has the third lowest price which is 600`
 
 ### Properly Escape Query Strings
 
-#### Problem: SQL Injection Vulnerability
+**Problem:** When inserting strings with special characters (like apostrophes), SQL errors occur.
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $r = array("Idiot's Guide Book", 1200);
 $q = "INSERT INTO product(p_name, p_price) VALUES('$r[0]', $r[1])";
-
 if(!$mysqli->query($q)) {
     echo "INSERT failed. Error: ".$mysqli->error;
 }
 ?>
 ```
 
-**Error:**
-```
-INSERT failed. Error: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 's Guide Book', 1200)' at line 1
-```
+**Error:** `You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 's Guide Book', 1200)' at line 1`
 
-#### Solution: Use `real_escape_string()`
+**Solution:** Use `real_escape_string()` method
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $r = array("Idiot's Guide Book", 1200);
-// Commented out vulnerable version:
+// Commented out the problematic line:
 // $q = "INSERT INTO product(p_name, p_price) VALUES('$r[0]', $r[1])";
 
-// Safe version with escaping:
+// Properly escaped version:
 $q = "INSERT INTO product(p_name, p_price) VALUES('".$mysqli->real_escape_string($r[0])."', $r[1])";
 
 if(!$mysqli->query($q)) {
@@ -404,21 +359,13 @@ if(!$mysqli->query($q)) {
 ?>
 ```
 
-**Result:**
-| p_id | p_name            | p_price |
-|------|-------------------|---------|
-| 1    | Pencil            | 10      |
-| 2    | Eraser            | 5       |
-| 3    | Mouse             | 600     |
-| 4    | Printer           | 4000    |
-| 5    | Idiot's Guide Book| 1200    |
+**Result:** Successfully inserts "Idiot's Guide Book" with price 1200
 
-### Return ID from Insertion
+### Get Last Inserted ID
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
@@ -435,20 +382,17 @@ echo "Record $id is inserted";
 ?>
 ```
 
-**Output:**
-```
-Record 6 is inserted
-```
+**Output:** `Record 6 is inserted`
 
-**Database State:**
-| p_id | p_name            | p_price |
-|------|-------------------|---------|
-| 1    | Pencil            | 10      |
-| 2    | Eraser            | 5       |
-| 3    | Mouse             | 600     |
-| 4    | Printer           | 4000    |
-| 5    | Idiot's Guide Book| 1200    |
-| 6    | Idiot's Guide Book| 1200    |
+**Result in database:**
+| p_id | p_name | p_price |
+|------|--------|---------|
+| 1 | Pencil | 10 |
+| 2 | Eraser | 5 |
+| 3 | Mouse | 600 |
+| 4 | Printer | 4000 |
+| 5 | Idiot's Guide Book | 1200 |
+| 6 | Idiot's Guide Book | 1200 |
 
 ---
 
@@ -466,52 +410,39 @@ WHERE some_column = some_value
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "DELETE FROM product where p_id=5";
-
 if(!$mysqli->query($q)) {
     echo "DELETE failed. Error: ".$mysqli->error;
 }
 ?>
 ```
 
-**Before:**
-| p_id | p_name            | p_price |
-|------|-------------------|---------|
-| 1    | Pencil            | 10      |
-| 2    | Eraser            | 5       |
-| 3    | Mouse             | 600     |
-| 4    | Printer           | 4000    |
-| 6    | Idiot's Guide Book| 1200    |
+**Result:** Record with p_id=5 is deleted
 
-**After:** (Record with p_id=5 is removed)
-
-### Delete via Form (viewinfo.php)
+### Delete via Form - Display Page (viewinfo.php)
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "select * from product";
-
 if($result = $mysqli->query($q)) {
     echo '<table border="1">';
     echo '<tr><th>Name</th><th>Price</th><th>Delete</th></tr>';
     
     while($row = $result->fetch_array()) {
-        echo '<tr>';
-        echo '<td>'.$row['p_name'].'</td>';
-        echo '<td>'.$row['p_price'].'</td>';
-        echo '<td><a href="delinfo.php?id='.$row['p_id'].'"> Delete</a></td>';
-        echo '</tr>';
+        echo "<tr>";
+        echo "<td>".$row['p_name']."</td>";
+        echo "<td>".$row['p_price']."</td>";
+        echo "<td><a href='delinfo.php?id=".$row['p_id']."'> Delete</a></td>";
+        echo "</tr>";
     }
     
     echo '</table>';
@@ -523,33 +454,30 @@ if($result = $mysqli->query($q)) {
 ```
 
 **Display:**
-| Name              | Price | Delete |
-|-------------------|-------|--------|
-| Pencil            | 10    | Delete |
-| Eraser            | 5     | Delete |
-| Mouse             | 600   | Delete |
-| Printer           | 4000  | Delete |
-| Idiot's Guide Book| 1200  | Delete |
+| Name | Price | Delete |
+|------|-------|--------|
+| Pencil | 10 | [Delete] |
+| Eraser | 5 | [Delete] |
+| Mouse | 600 | [Delete] |
+| Printer | 4000 | [Delete] |
+| Idiot's Guide Book | 1200 | [Delete] |
 
-### Delete Processing (delinfo.php)
+### Delete Handler Page (delinfo.php)
 
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $p_id = $_GET['id'];
 $mysqli = new mysqli('localhost', 'root', 'root', 'staff');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "DELETE FROM product where p_id=$p_id";
-
 if(!$mysqli->query($q)) {
     echo "DELETE failed. Error: ".$mysqli->error;
 }
@@ -560,13 +488,7 @@ header("Location: viewinfo.php");
 ?>
 ```
 
-**Result After Deletion:**
-| p_id | p_name            | p_price |
-|------|-------------------|---------|
-| 1    | Pencil            | 10      |
-| 3    | Mouse             | 600     |
-| 4    | Printer           | 4000    |
-| 6    | Idiot's Guide Book| 1200    |
+**Result after deletion:** Record with specified ID is removed from database
 
 ---
 
@@ -576,8 +498,8 @@ header("Location: viewinfo.php");
 
 ```sql
 UPDATE table_name
-SET column1 = value, column2 = value2, ...
-WHERE some_column = some_value
+SET column1=value, column2=value2,...
+WHERE some_column=some_value
 ```
 
 **Note:** The specified existing record will be deleted and replaced with the assigned value
@@ -587,13 +509,11 @@ WHERE some_column = some_value
 ```php
 <?php
 $mysqli = new mysqli('localhost', 'root', '', 'new');
-
 if($mysqli->connect_errno) {
     echo $mysqli->connect_errno.": ".$mysqli->connect_error;
 }
 
 $q = "UPDATE product SET p_price=20 where p_id=1";
-
 if(!$mysqli->query($q)) {
     echo "UPDATE failed. Error: ".$mysqli->error;
 }
@@ -601,41 +521,38 @@ if(!$mysqli->query($q)) {
 ```
 
 **Before:**
-| p_id | p_name  | p_price |
-|------|---------|---------|
-| 1    | Pencil  | 10      |
-| 2    | Eraser  | 5       |
-| 3    | Mouse   | 600     |
-| 4    | Printer | 4000    |
+| p_id | p_name | p_price |
+|------|--------|---------|
+| 1 | Pencil | 10 |
+| 2 | Eraser | 5 |
+| 3 | Mouse | 600 |
+| 4 | Printer | 4000 |
 
 **After:**
-| p_id | p_name  | p_price |
-|------|---------|---------|
-| 1    | Pencil  | 20      | ← Updated
-| 2    | Eraser  | 5       |
-| 3    | Mouse   | 600     |
-| 4    | Printer | 4000    |
+| p_id | p_name | p_price |
+|------|--------|---------|
+| 1 | Pencil | **20** |
+| 2 | Eraser | 5 |
+| 3 | Mouse | 600 |
+| 4 | Printer | 4000 |
 
-### Editing MySQL Data via Form
-
-#### Step 1: Display with Edit Links
+### Update via Form - Display with Edit Links (practice_2.php)
 
 ```php
 <?php
 require_once('connect_1.php');
 $q = "select * from product";
-
 if($result = $mysqli->query($q)) {
     echo '<table border="1">';
     echo '<tr><th>ID</th><th>Name</th><th>Price</th><th>Edit</th></tr>';
     
     while($row = $result->fetch_array()) {
-        echo '<tr>';
-        echo '<td>'.$row['p_id'].'</td>';
-        echo '<td>'.$row['p_name'].'</td>';
-        echo '<td>'.$row['p_price'].'</td>';
-        echo '<td><a href="practice_2edit.php?id='.$row['p_id'].'"> Edit</a></td>';
-        echo '</tr>';
+        echo "<tr>";
+        echo "<td>".$row['p_id']."</td>";
+        echo "<td>".$row['p_name']."</td>";
+        echo "<td>".$row['p_price']."</td>";
+        echo "<td><a href='practice_2edit.php?id=".$row['p_id']."'> Edit</a></td>";
+        echo "</tr>";
     }
     
     echo '</table>';
@@ -647,14 +564,14 @@ if($result = $mysqli->query($q)) {
 ```
 
 **Display:**
-| ID | Name   | Price | Edit |
-|----|--------|-------|------|
-| 1  | Pencil | 20    | Edit |
-| 2  | Eraser | 5     | Edit |
-| 3  | Mouse  | 600   | Edit |
-| 4  | Printer| 4000  | Edit |
+| ID | Name | Price | Edit |
+|----|------|-------|------|
+| 1 | Pencil | 20 | [Edit] |
+| 2 | Eraser | 5 | [Edit] |
+| 3 | Mouse | 600 | [Edit] |
+| 4 | Printer | 4000 | [Edit] |
 
-#### Step 2: Edit Form (practice_2edit.php)
+### Edit Form Page (practice_2edit.php)
 
 ```php
 <?php
@@ -685,12 +602,11 @@ Product Price: [20]
 [submit]
 ```
 
-#### Step 3: Update Processing (practice_2update.php)
+### Update Handler Page (practice_2update.php)
 
 ```php
 <?php
 require_once('connect_1.php');
-
 $p_id = $_POST['p_id'];
 $p_name = $_POST['p_name'];
 $p_price = $_POST['p_price'];
@@ -702,42 +618,38 @@ if(!$mysqli->query($q)) {
 }
 
 $mysqli->close();
-// Redirect back to list
+// Redirect back to main page
 header("Location: practice_2.php");
 ?>
 ```
 
-**Result:**
-| ID | Name        | Price | Edit |
-|----|-------------|-------|------|
-| 1  | Pencil case | 10    | Edit | ← Updated
-| 2  | Eraser      | 5     | Edit |
-| 3  | Mouse       | 600   | Edit |
-| 4  | Printer     | 4000  | Edit |
+**Result:** Updated record with new values (e.g., "Pencil case", price 10)
 
-### Advanced: Adding Combo Box (Foreign Key)
+---
 
-#### Database Structure
+## Advanced: Update with Combo Box (Product Type)
+
+### Database Structure
 
 **product_type table:**
-| p_type_ID | p_type       |
-|-----------|--------------|
-| 1         | accessories  |
-| 2         | stationary   |
+| p_type_ID | p_type |
+|-----------|--------|
+| 1 | accessories |
+| 2 | stationary |
 
-**product table (with foreign key):**
-| p_id | p_name            | p_price | p_type_ID |
-|------|-------------------|---------|-----------|
-| 1    | Pencil case       | 10      | 2         |
-| 2    | Eraser            | 5       | 2         |
-| 3    | Mouse             | 600     | 1         |
-| 4    | Printer           | 4000    | 1         |
+**product table (updated):**
+| p_id | p_name | p_price | p_type_ID |
+|------|--------|---------|-----------|
+| 1 | Pencil case | 10 | 2 |
+| 2 | Eraser | 5 | 2 |
+| 3 | Mouse | 600 | 1 |
+| 4 | Printer | 4000 | 1 |
 
-#### Display with Product Type
+### Display with Product Type (practice_3.php)
 
 ```php
 <?php
-require_once('connect_2.php');
+require_once('connect_1.php');
 $q = "select * from product";
 
 if($result = $mysqli->query($q)) {
@@ -745,23 +657,22 @@ if($result = $mysqli->query($q)) {
     echo '<tr><th>ID</th><th>Name</th><th>Price</th><th>Product type</th><th>Edit</th></tr>';
     
     while($row = $result->fetch_array()) {
-        echo '<tr>';
-        echo '<td>'.$row['p_id'].'</td>';
-        echo '<td>'.$row['p_name'].'</td>';
-        echo '<td>'.$row['p_price'].'</td>';
+        echo "<tr>";
+        echo "<td>".$row['p_id']."</td>";
+        echo "<td>".$row['p_name']."</td>";
+        echo "<td>".$row['p_price']."</td>";
         
         // Get product type
         $q1 = "select * from product_type";
         $result1 = $mysqli->query($q1);
-        
         while($row1 = $result1->fetch_array()) {
             if($row1[0] == $row['p_type_ID']) {
-                echo '<td>'.$row1[1].'</td>';
+                echo "<td>".$row1[1]."</td>";
             }
         }
         
-        echo '<td><a href="practice_2edit.php?id='.$row['p_id'].'"> Edit</a></td>';
-        echo '</tr>';
+        echo "<td><a href='practice_2edit.php?id=".$row['p_id']."'> Edit</a></td>";
+        echo "</tr>";
     }
     
     echo '</table>';
@@ -773,14 +684,14 @@ if($result = $mysqli->query($q)) {
 ```
 
 **Display:**
-| ID | Name              | Price | Product type | Edit |
-|----|-------------------|-------|--------------|------|
-| 1  | Pencil            | 10    | stationary   | Edit |
-| 2  | Eraser            | 5     | stationary   | Edit |
-| 3  | Mouse             | 600   | accessories  | Edit |
-| 4  | Printer           | 4000  | accessories  | Edit |
+| ID | Name | Price | Product type | Edit |
+|----|------|-------|--------------|------|
+| 1 | Pencil | 10 | stationary | [Edit] |
+| 2 | Eraser | 5 | stationary | [Edit] |
+| 3 | Mouse | 600 | accessories | [Edit] |
+| 4 | Printer | 4000 | accessories | [Edit] |
 
-#### Edit Form with Combo Box (practice_2edit.php)
+### Edit Form with Dropdown (practice_3edit.php)
 
 ```php
 <?php
@@ -800,15 +711,12 @@ while($row3 = $result3->fetch_array()) {
     
     // Populate dropdown
     $q4 = "select p_type_ID, p_type from product_type;";
-    
     if($result4 = $mysqli->query($q4)) {
         while($row4 = $result4->fetch_array()) {
             echo "<option value='".$row4[0]."'";
-            
-            // Mark selected option
-            if($row4[0] == $row3['p_type_ID'])
+            if($row4[0] == $row3['p_type_ID']) {
                 echo " SELECTED ";
-            
+            }
             echo ">".$row4[1]."</option>";
         }
     } else {
@@ -833,7 +741,7 @@ Product Type: [stationary ▼]
 [submit]
 ```
 
-#### Update with Foreign Key (practice_3update.php)
+### Update with Product Type (practice_3update.php)
 
 ```php
 <?php
@@ -857,72 +765,121 @@ header("Location: practice_3.php");
 ?>
 ```
 
-**Updated Display:**
-| ID | Name  | Price | Product type | Edit |
-|----|-------|-------|--------------|------|
-| 1  | Pen   | 20    | stationary   | Edit | ← Updated
-| 2  | Eraser| 5     | stationary   | Edit |
-| 3  | Mouse | 600   | accessories  | Edit |
-| 4  | Printer| 4000 | accessories  | Edit |
+**Result:** Updates product with new name ("Pen"), price (20), and maintains or changes product type (stationary)
 
 ---
 
 ## Key Takeaways
 
 ### Security Best Practices
-- Always use `real_escape_string()` to prevent SQL injection
-- Validate and sanitize all user inputs
-- Check for connection errors before executing queries
-- Use prepared statements for better security (consider using PDO)
+- Always use `real_escape_string()` for user inputs
+- Validate and sanitize all form data
+- Use prepared statements for better security (not covered in basic examples)
 
 ### Connection Management
-- Always close database connections with `close()`
-- Check `connect_errno` after creating connection
-- Handle errors gracefully with proper error messages
+- Always check for connection errors
+- Close connections when done
+- Consider using `require_once()` for connection files
 
-### Query Execution
-- Check if query succeeded before processing results
-- Free result sets with `free()` when done
-- Use `num_rows` to get row count
-- Use `field_count` to get column count
-- Use `insert_id` to get last inserted ID
+### Error Handling
+- Check query results before processing
+- Display meaningful error messages during development
+- Log errors appropriately in production
 
-### Common mysqli Methods
+### Data Retrieval
+- Use `fetch_array()` for row-by-row processing
+- Remember to `free()` result sets
+- Use `num_rows` and `field_count` for metadata
 
-#### Connection
-```php
-$mysqli = new mysqli($host, $user, $pass, $db);
-$mysqli->connect_errno  // Error number
-$mysqli->connect_error  // Error message
-$mysqli->close()        // Close connection
-```
-
-#### Query Execution
-```php
-$mysqli->query($sql)           // Execute query
-$mysqli->real_escape_string()  // Escape special characters
-$mysqli->insert_id             // Get last insert ID
-$mysqli->error                 // Get error message
-```
-
-#### Result Processing
-```php
-$result->fetch_array()  // Fetch row as array
-$result->num_rows       // Number of rows
-$result->field_count    // Number of columns
-$result->data_seek($n)  // Move to specific row
-$result->free()         // Free result memory
-```
+### CRUD Operations
+- **Create:** INSERT INTO
+- **Read:** SELECT
+- **Update:** UPDATE SET WHERE
+- **Delete:** DELETE FROM WHERE
 
 ---
 
-## Assignment Notes
+## Common Issues and Solutions
 
-- Practice all CRUD operations (Create, Read, Update, Delete)
-- Implement proper error handling
-- Use form validation
-- Test with different data types
-- Implement the combo box example with foreign keys
-- Add CSS styling to make forms user-friendly
+### Problem: Connection Error
+**Solution:** Check hostname (use `127.0.0.1` instead of `localhost` if needed)
 
-**Remember:** Always test your code thoroughly and handle edge cases!
+### Problem: SQL Syntax Error with Apostrophes
+**Solution:** Use `$mysqli->real_escape_string()` on all string inputs
+
+### Problem: Cannot Get Last Insert ID
+**Solution:** Use `$mysqli->insert_id` immediately after INSERT query
+
+### Problem: Form Data Not Updating
+**Solution:** 
+- Check form method (POST vs GET)
+- Verify input name attributes match PHP variable names
+- Use hidden fields for IDs in forms
+
+---
+
+## Additional Resources
+
+### File Operations
+- `readfile()` - Outputs entire file contents
+- `fwrite()` - Writes to file
+- File modes: r, r+, w, w+, a, a+
+
+### MySQLi Methods
+- `query()` - Execute SQL query
+- `fetch_array()` - Get row as array
+- `num_rows` - Number of rows in result
+- `field_count` - Number of columns
+- `data_seek()` - Jump to specific row
+- `free()` - Free result memory
+- `close()` - Close connection
+
+### Redirects
+```php
+header("Location: page.php");
+```
+**Note:** Must be called before any output
+
+---
+
+## Practice Tips
+
+1. **Start Simple:** Begin with file-based storage before moving to MySQL
+2. **Test Connections:** Always verify database connectivity first
+3. **Use phpMyAdmin:** Visual tool for database management
+4. **Debug Queries:** Echo SQL strings to verify syntax
+5. **Incremental Development:** Build CRUD operations one at a time
+6. **Sanitize Inputs:** Never trust user input directly
+
+---
+
+## Mac-Specific Notes
+
+### MAMP/XAMPP Setup
+- Default MySQL port: 3306 (MAMP) or 3307
+- Default username: `root`
+- Default password: `root` (MAMP) or empty (XAMPP)
+- Document root: `/Applications/MAMP/htdocs/` or `/Applications/XAMPP/htdocs/`
+
+### Localhost Access
+- Access via: `http://localhost:8888/` (MAMP) or `http://localhost/` (XAMPP)
+- phpMyAdmin: `http://localhost:8888/phpMyAdmin/` (MAMP)
+
+### File Permissions
+- Ensure PHP has write permissions for file-based databases
+- Check folder permissions: `chmod 755 directory_name`
+- Check file permissions: `chmod 644 file_name`
+
+---
+
+## Assignment Guidelines
+
+When completing assignments:
+1. Test all CRUD operations thoroughly
+2. Implement proper error handling
+3. Use meaningful variable names
+4. Comment your code
+5. Validate user inputs
+6. Test with edge cases (special characters, empty fields, etc.)
+7. Ensure proper database connection closure
+8. Use consistent coding style
