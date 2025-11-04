@@ -1,15 +1,9 @@
 # Lab 12 Assignment Guide
-## Database Programming with PHP - Sticky Note Web App
 
-**Course:** CSS326 Database Programming Laboratory  
-**Assignment:** #12  
-**Objective:** Apply file manipulation, string manipulation, and HTML/CSS rendering  
-**Score:** 2 marks  
-**Due Date:** Submit as single ZIP file
 
 ---
 
-## 📋 Assignment Overview
+## Assignment 12.1 Overview
 
 Create a **Sticky Note Web Application** that allows users to:
 1. Enter a title and note content
@@ -19,7 +13,7 @@ Create a **Sticky Note Web Application** that allows users to:
 
 ---
 
-## 🎯 Expected Output
+## Expected Output
 
 ### Visual Result (Figure 1)
 
@@ -66,7 +60,7 @@ Don't forget to practice and submit your assignment!
 
 ---
 
-## 📁 Required Files
+## Required Files
 
 ### 1. **sticky.php** (Main application file)
 - Contains HTML form
@@ -82,12 +76,12 @@ Don't forget to practice and submit your assignment!
 
 ### 3. **sticky_noteXXX.txt** (Data storage)
 - Replace `XXX` with **last 3 digits of your student ID**
-- Example: If ID is 6522770123, use `sticky_note123.txt`
+- Example: If ID is 6622772422, use `sticky_note422.txt`
 - Created automatically by the PHP script
 
 ---
 
-## 🔧 Implementation Steps
+## Implementation Steps
 
 ### Step 1: Understand the Form Structure
 
@@ -227,7 +221,7 @@ if(isset($_POST['submit'])) {
 
 ---
 
-## 🔍 Complete Code Flow Diagram
+## Complete Code Flow Diagram
 
 ```mermaid
 flowchart TD
@@ -257,7 +251,7 @@ flowchart TD
 
 ---
 
-## 🎨 CSS Explanation (Already Provided)
+## CSS Explanation (Already Provided)
 
 ### Sticky Note Structure
 
@@ -310,7 +304,7 @@ div.post {
 
 ---
 
-## ✅ Testing Checklist
+## Testing Checklist
 
 ### Test 1: First Note
 1. Open `sticky.php` in browser
@@ -356,81 +350,7 @@ Don't forget to practice and submit your assignment!
 
 ---
 
-## 🚨 Common Issues and Solutions
-
-### Issue 1: File Not Created
-**Problem:** `sticky_noteXXX.txt` file not appearing
-
-**Solutions:**
-- Check file permissions on the directory
-- On Mac: `chmod 755 /path/to/directory`
-- Ensure PHP has write permissions
-- Check if `fopen()` returns false (add error checking)
-
-**Better code with error handling:**
-```php
-$file = fopen("sticky_noteXXX.txt", "a");
-if($file === false) {
-    die("Error: Cannot open file for writing!");
-}
-```
-
----
-
-### Issue 2: Note Count Wrong
-**Problem:** Footer shows incorrect number of notes
-
-**Causes:**
-- Empty lines in file
-- Not dividing by 2
-- File reading error
-
-**Solution:**
-- Use `trim($line) !== ''` to skip empty lines
-- Ensure division by 2: `$notes = $count / 2;`
-
----
-
-### Issue 3: Special Characters Display Wrong
-**Problem:** Quotes or special characters look weird
-
-**Solution:** Add UTF-8 charset in HTML head:
-```php
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="sticky.css">
-</head>
-```
-
----
-
-### Issue 4: Note Not Displaying After Submit
-**Problem:** Form submits but note doesn't show
-
-**Causes:**
-- `isset($_POST['submit'])` returns false
-- Typo in form field names
-- Form not submitting to same page
-
-**Solution:**
-- Verify submit button has `name="submit"`
-- Check `$_POST['title']` and `$_POST['note']` exist
-- Debug with: `var_dump($_POST);`
-
----
-
-### Issue 5: CSS Not Loading
-**Problem:** Sticky note has no styling
-
-**Solutions:**
-- Ensure `sticky.css` is in same directory as `sticky.php`
-- Check browser console for 404 errors
-- Try absolute path: `href="/path/to/sticky.css"`
-- Clear browser cache (Cmd+Shift+R on Mac)
-
----
-
-## 🔒 Important Security Notes
+## Security Notes for Assignment 12.1
 
 ### Current Implementation (Assignment Requirements)
 The provided solution works for the assignment but has security considerations:
@@ -467,135 +387,7 @@ if(empty($title) || empty($note)) {
 
 ---
 
-## 📦 Submission Checklist
-
-### Files to Include
-- [ ] `sticky.php` (completed with your code)
-- [ ] `sticky.css` (provided file)
-- [ ] `sticky_noteXXX.txt` (with test data as shown in Figure 2)
-  - Replace XXX with last 3 digits of your student ID
-  - Should contain 6 lines (3 notes × 2 lines each)
-
-### Pre-Submission Tests
-- [ ] Form displays correctly
-- [ ] Submitting first note works
-- [ ] Submitting second note works
-- [ ] Submitting third note works
-- [ ] File contains correct data format
-- [ ] Note count displays correctly
-- [ ] CSS styling appears correctly
-- [ ] No PHP errors displayed
-
-### File Naming
-- [ ] Main file named exactly: `sticky.php`
-- [ ] CSS file named exactly: `sticky.css`
-- [ ] Text file named: `sticky_note` + last 3 digits of ID + `.txt`
-  - Example: `sticky_note123.txt` if ID ends in 123
-
-### Create ZIP File
-**On Mac:**
-```bash
-# Navigate to your project folder
-cd ~/path/to/your/project
-
-# Create ZIP file
-zip -r Assignment12_StudentID.zip sticky.php sticky.css sticky_noteXXX.txt
-
-# Verify contents
-unzip -l Assignment12_StudentID.zip
-```
-
-**Or using Finder:**
-1. Select all three files
-2. Right-click → "Compress 3 items"
-3. Rename to: `Assignment12_YourStudentID.zip`
-
----
-
-## 🎓 Learning Objectives Achieved
-
-By completing this assignment, you've practiced:
-
-### 1. File Manipulation
-- ✅ Opening files with `fopen()`
-- ✅ Writing to files with `fwrite()`
-- ✅ Reading from files with `fgets()`
-- ✅ Closing files with `fclose()`
-- ✅ Checking end of file with `feof()`
-
-### 2. String Manipulation
-- ✅ Concatenating strings
-- ✅ Using newline characters (`\n`)
-- ✅ Trimming whitespace with `trim()`
-- ✅ Counting strings/lines
-
-### 3. PHP Fundamentals
-- ✅ Handling POST data
-- ✅ Conditional execution with `if`
-- ✅ Using `isset()` to check variables
-- ✅ Loops with `while`
-- ✅ Variable assignment and output
-
-### 4. HTML/CSS Integration
-- ✅ Embedding PHP in HTML
-- ✅ Using external CSS
-- ✅ Form creation and handling
-- ✅ Dynamic content generation
-
----
-
-## 🚀 Extension Ideas (Optional - Not Required)
-
-Want to enhance your sticky note app? Try these:
-
-### 1. Display All Notes
-Instead of just the last note, display all notes from the file:
-```php
-// Read and display all notes
-$file = fopen("sticky_noteXXX.txt", "r");
-$titles = [];
-$notes = [];
-$i = 0;
-
-while(!feof($file)) {
-    $line = fgets($file);
-    if($line !== false && trim($line) !== '') {
-        if($i % 2 == 0) {
-            $titles[] = $line;
-        } else {
-            $notes[] = $line;
-        }
-        $i++;
-    }
-}
-fclose($file);
-
-// Display all notes
-for($j = 0; $j < count($titles); $j++) {
-    echo '<div class="post">';
-    echo '<div class="title">'.$titles[$j].'</div>';
-    echo '<div class="note">'.$notes[$j].'</div>';
-    echo '</div>';
-}
-```
-
-### 2. Add Delete Functionality
-Add a delete button to remove notes
-
-### 3. Add Timestamp
-Save when each note was created
-
-### 4. Color Options
-Let users choose sticky note colors
-
-### 5. Search Feature
-Add ability to search through notes
-
-**Note:** These are just ideas for learning - not required for the assignment!
-
----
-
-## 📚 PHP Functions Reference
+## PHP Functions Reference
 
 ### File Operations
 | Function | Purpose | Example |
@@ -630,85 +422,10 @@ Add ability to search through notes
 | `$_GET` | URL parameters |
 | `$_SERVER` | Server information |
 
----
-
-## ❓ FAQ
-
-### Q1: What if I make a mistake in the file?
-**A:** Just delete `sticky_noteXXX.txt` and start over. The script will create a new one.
-
-### Q2: Can I use a different filename?
-**A:** No, the assignment requires `sticky_noteXXX.txt` format with your student ID.
-
-### Q3: Do I need to submit the text file with data?
-**A:** Yes! Include it with the test data shown in Figure 2.
-
-### Q4: What if the note count shows decimals like 3.5?
-**A:** This means you have an odd number of lines. Make sure each note has exactly 2 lines (title + content).
-
-### Q5: Can I modify the CSS?
-**A:** The assignment provides CSS, but minor adjustments are likely okay. Keep the same general appearance.
-
-### Q6: Does the app need to show old notes?
-**A:** No, it only needs to show the most recently submitted note. Old notes are stored in the file but not displayed.
-
-### Q7: What if my student ID is 6522770001?
-**A:** Use `sticky_note001.txt` (include leading zeros)
-
-### Q8: Should I validate empty form submissions?
-**A:** Not required for this assignment, but it's good practice!
 
 ---
 
-## 🎯 Grading Criteria (2 marks total)
-
-### Functionality (1.5 marks)
-- Form submits correctly
-- Data saves to text file
-- Title displays after submission
-- Note displays after submission
-- Note count calculates correctly
-- File format matches requirements
-
-### Code Quality (0.5 marks)
-- Code is properly commented
-- File properly named with student ID
-- Follows assignment instructions
-- Submission includes all required files
-- ZIP file created correctly
-
----
-
-## 💡 Tips for Success
-
-1. **Test frequently** - Don't wait until the end to test
-2. **Read error messages** - PHP errors tell you what's wrong
-3. **Check file permissions** - Ensure PHP can write files
-4. **Use comments** - Help yourself understand your code
-5. **Follow naming conventions** - Use exact filenames required
-6. **Backup your work** - Keep copies before making changes
-7. **Start early** - Don't leave it until the last minute
-
----
-
-## 🎉 Congratulations!
-
-You've completed Lab Assignment #12! You now know how to:
-- Create PHP web applications
-- Handle form submissions
-- Work with files (read/write)
-- Integrate PHP with HTML/CSS
-- Store persistent data
-
-**Good luck with your submission! 🚀**
-
----
-
-**End of Assignment Guide**
-
----
-
-# Assignment 2: Web Application for User Management System
+# Assignment 12.2: Web Application for User Management System
 
 **Objective:** Apply PHP and DBMS knowledge with HTML/CSS to create a complete CRUD application  
 **Score:** 8 marks  
@@ -716,7 +433,7 @@ You've completed Lab Assignment #12! You now know how to:
 
 ---
 
-## 📋 Assignment 2 Overview
+## Assignment 12.2 Overview
 
 Create a **User Management System** with the following features:
 1. Database with 4 tables (USER, USERGROUP, TITLE, GENDER)
@@ -729,7 +446,7 @@ Create a **User Management System** with the following features:
 
 ---
 
-## 🗄️ Database Structure
+## Database Structure
 
 ### Database: `staff`
 
@@ -775,9 +492,9 @@ erDiagram
 
 ---
 
-## 📝 Step-by-Step Implementation
+## Step-by-Step Implementation
 
-### Step 1: Create Database and Tables [1 mark]
+### Step 1: Create Database and Tables
 
 #### USERGROUP Table
 
@@ -812,7 +529,7 @@ CREATE TABLE USER (
 
 ---
 
-### Step 2: Create TITLE and GENDER Tables [1 mark]
+### Step 2: Create TITLE and GENDER Tables
 
 #### TITLE Table with Data
 
@@ -866,7 +583,7 @@ INSERT INTO GENDER (GENDER_ID, GENDER_NAME) VALUES
 
 ---
 
-### Step 3: Create Foreign Key Constraints [1 mark]
+### Step 3: Create Foreign Key Constraints
 
 ```sql
 -- Add foreign key constraints with RESTRICT
@@ -894,7 +611,7 @@ ADD CONSTRAINT fk_user_group
 
 ---
 
-### Step 4: Complete add_group.php → group.php [1 mark]
+### Step 4: Complete add_group.php → group.php
 
 #### add_group.php (Already provided)
 
@@ -966,7 +683,7 @@ if($result){
 
 ---
 
-### Step 5: Complete add_user.php → user.php [1 mark]
+### Step 5: Complete add_user.php → user.php
 
 #### add_user.php - Populate Dropdowns and Radio Buttons
 
@@ -1082,7 +799,7 @@ while($row = $result->fetch_array()){ ?>
 
 ---
 
-### Step 6: Implement Delete Functionality [1 mark]
+### Step 6: Implement Delete Functionality
 
 #### delinfo.php (Already provided)
 
@@ -1128,13 +845,13 @@ if(isset($id)) {
 
 ---
 
-### Step 7: Delete Groups (Same as Step 6) [1 mark]
+### Step 7: Delete Groups (Same as Step 6)
 
 Already covered in Step 6 - the same `delinfo.php` handles both user and group deletion using different parameters.
 
 ---
 
-### Step 8: Implement Edit Functionality [1 mark]
+### Step 8: Implement Edit Functionality
 
 #### edit_user.php
 
@@ -1259,7 +976,7 @@ if(isset($_POST['su'])) {
 
 ---
 
-## 🔍 Application Flow Diagrams
+## Application Flow Diagrams
 
 ### Add User Flow
 
@@ -1342,7 +1059,7 @@ flowchart TD
 
 ---
 
-## 📁 Complete File Structure
+## Complete File Structure
 
 ```
 Assignment12_XXX/
@@ -1364,7 +1081,7 @@ Assignment12_XXX/
 
 ---
 
-## 🎨 CSS Highlights (default.css)
+## CSS Highlights (default.css)
 
 ### Pink Theme Colors
 - Primary: `#F577A6` (pink header)
@@ -1397,217 +1114,7 @@ Assignment12_XXX/
 
 ---
 
-## ✅ Testing Checklist
-
-### Database Setup
-- [ ] Database "staff" created
-- [ ] USERGROUP table created
-- [ ] USER table created
-- [ ] TITLE table created with 5 records
-- [ ] GENDER table created with 3 records
-- [ ] Foreign key constraints added
-- [ ] SQL file exported
-
-### User Group Management
-- [ ] Can view group.php
-- [ ] Can navigate to add_group.php
-- [ ] Can add new group
-- [ ] New group appears in group.php
-- [ ] Total count displays correctly
-- [ ] Can click Edit icon
-- [ ] Edit form populates with data
-- [ ] Can update group
-- [ ] Can delete group
-- [ ] Delete removes from database
-
-### User Management
-- [ ] Can view user.php
-- [ ] Can navigate to add_user.php
-- [ ] Title dropdown populates
-- [ ] Gender radio buttons populate
-- [ ] User group dropdown populates
-- [ ] Can add new user
-- [ ] New user appears in user.php
-- [ ] Name displays with title and gender
-- [ ] Disabled checkbox works
-- [ ] Total count displays correctly
-- [ ] Can click Edit icon
-- [ ] Edit form populates with data
-- [ ] Dropdowns show current values
-- [ ] Radio buttons checked correctly
-- [ ] Can update user
-- [ ] Can delete user
-
-### Integration Tests
-- [ ] Navigation menu works
-- [ ] All pages styled correctly
-- [ ] Icons display properly
-- [ ] No PHP errors
-- [ ] No SQL errors
-- [ ] Foreign key constraints work
-- [ ] Cannot delete title used by user
-- [ ] Cannot delete gender used by user
-- [ ] Cannot delete group with members
-
----
-
-## 🚨 Common Issues and Solutions
-
-### Issue 1: Access Denied Error
-**Error:** `1045: Access denied for user 'root'@'localhost'`
-
-**Solution:** Check `connect.php`:
-```php
-// For MAMP (Mac)
-$mysqli = new mysqli('localhost', 'root', 'root', 'staff');
-
-// For XAMPP (Mac)
-$mysqli = new mysqli('localhost', 'root', '', 'staff');
-
-// Check your MAMP/XAMPP MySQL password
-```
-
----
-
-### Issue 2: Foreign Key Constraint Fails
-**Error:** `Cannot add or update a child row: a foreign key constraint fails`
-
-**Causes:**
-- Trying to insert USER with non-existent TITLE_ID
-- Trying to insert USER with non-existent GENDER_ID
-- Trying to insert USER with non-existent USERGROUP_ID
-
-**Solution:**
-- Ensure TITLE, GENDER, and USERGROUP tables have data
-- Verify IDs exist before inserting USER
-- Check dropdown values match database IDs
-
----
-
-### Issue 3: Cannot Delete Group
-**Error:** `Cannot delete or update a parent row: a foreign key constraint fails`
-
-**Cause:** Trying to delete USERGROUP that has users
-
-**Solution:**
-1. Delete or reassign all users in that group first
-2. Or remove foreign key constraint (not recommended)
-3. Or use CASCADE instead of RESTRICT (changes assignment requirements)
-
----
-
-### Issue 4: Checkbox Always Unchecked
-**Problem:** Disabled checkbox never shows as checked
-
-**Solution:** Check database value and comparison:
-```php
-// Correct way
-<input type='checkbox' <?php if($row['DISABLE'] == 1) echo "CHECKED"; echo " disabled"; ?>>
-
-// Also acceptable
-<input type='checkbox' <?php if($row['DISABLE']) echo "CHECKED"; ?> disabled>
-```
-
----
-
-### Issue 5: Edit Form Shows Wrong Values
-**Problem:** Dropdowns or radio buttons don't show current selection
-
-**Causes:**
-- Not comparing current value with database value
-- Using wrong comparison operator
-- Typo in field names
-
-**Solution for dropdown:**
-```php
-while($row1 = $result1->fetch_array()) {
-    echo "<option value='$row1[0]' ";
-    // CRITICAL: Compare with database value
-    if($row1[0] == $row['USER_TITLE'])
-        echo "SELECTED";
-    echo ">$row1[1]</option>";
-}
-```
-
-**Solution for radio:**
-```php
-while($row2 = $result2->fetch_array()) {
-    echo "<input ";
-    // CRITICAL: Compare with database value
-    if($row2[0] == $row['USER_GENDER'])
-        echo "CHECKED='CHECKED' ";
-    echo "type='radio' name='gender' value='$row2[0]'>".$row2[1];
-}
-```
-
----
-
-### Issue 6: Images Not Displaying
-**Problem:** Modify.png and Delete.png show as broken images
-
-**Solutions:**
-1. Create `images/` folder in same directory as PHP files
-2. Add 24x24 pixel PNG images named exactly:
-   - `Modify.png`
-   - `Delete.png`
-3. Check file permissions (readable)
-4. Verify path in code: `<img src="images/Modify.png">`
-
-**Alternative:** Use emoji or text temporarily:
-```php
-<td><a href='edit_user.php?userid=<?=$row['USER_ID']?>'>✏️ Edit</a></td>
-<td><a href='delinfo.php?userid=<?=$row['USER_ID']?>'>🗑️ Delete</a></td>
-```
-
----
-
-### Issue 7: Real Escape String Errors
-**Problem:** `mysqli_real_escape_string() expects exactly 2 parameters`
-
-**Wrong:**
-```php
-$firstname = mysqli_real_escape_string($_POST['firstname']);
-```
-
-**Correct:**
-```php
-$firstname = $mysqli->real_escape_string($_POST['firstname']);
-```
-
----
-
-### Issue 8: Header Already Sent Error
-**Error:** `Cannot modify header information - headers already sent`
-
-**Causes:**
-- Output (echo, HTML) before `header()` call
-- Whitespace before `<?php` tag
-- BOM (Byte Order Mark) in file
-
-**Solutions:**
-1. Ensure no output before `header("Location: ...")`:
-```php
-<?php
-// No spaces or newlines before this line
-require_once('connect.php');
-
-if(isset($_POST['submit'])) {
-    // Process data
-    // ...
-    
-    // Redirect - no output before this
-    header("Location: group.php");
-    exit(); // Good practice
-}
-?>
-```
-
-2. Check for spaces/newlines at start of file
-3. Save file as UTF-8 without BOM
-
----
-
-## 🔒 Security Notes for Assignment 2
+## Security Notes for Assignment 12.2
 
 ### Current Implementation (Acceptable for Assignment)
 ```php
@@ -1640,420 +1147,4 @@ if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 
 **For this assignment:** Basic `real_escape_string()` is sufficient, but understanding better practices is valuable!
 
----
-
-## 📊 SQL Query Reference
-
-### Basic CRUD Operations
-
-#### Create (INSERT)
-```sql
-INSERT INTO USER (USER_FNAME, USER_LNAME, USER_EMAIL) 
-VALUES ('John', 'Doe', 'john@example.com');
-```
-
-#### Read (SELECT)
-```sql
--- Simple select
-SELECT * FROM USER;
-
--- Select specific columns
-SELECT USER_FNAME, USER_LNAME FROM USER;
-
--- With WHERE clause
-SELECT * FROM USER WHERE USER_ID = 1;
-
--- With JOIN (multiple tables)
-SELECT USER.USER_FNAME, TITLE.TITLE_NAME 
-FROM USER 
-INNER JOIN TITLE ON USER.USER_TITLE = TITLE.TITLE_ID;
-```
-
-#### Update (UPDATE)
-```sql
-UPDATE USER 
-SET USER_FNAME = 'Jane', USER_EMAIL = 'jane@example.com' 
-WHERE USER_ID = 1;
-```
-
-#### Delete (DELETE)
-```sql
-DELETE FROM USER WHERE USER_ID = 1;
-```
-
-### Advanced Queries Used in Assignment
-
-#### JOIN Query for user.php
-```sql
-SELECT * 
-FROM USER, USERGROUP, TITLE, GENDER 
-WHERE USER.USER_GROUPID = USERGROUP.USERGROUP_ID 
-  AND USER.USER_TITLE = TITLE.TITLE_ID 
-  AND GENDER.GENDER_ID = USER.USER_GENDER;
-```
-
-#### Count Records
-```sql
-SELECT COUNT(*) as total FROM USER;
-```
-
-#### Check Foreign Key Usage
-```sql
--- Find users using a specific title
-SELECT COUNT(*) FROM USER WHERE USER_TITLE = 1;
-
--- Find users in a specific group
-SELECT COUNT(*) FROM USER WHERE USER_GROUPID = 3;
-```
-
----
-
-## 💾 Database Export Instructions
-
-### Using phpMyAdmin
-
-1. **Open phpMyAdmin**
-   - MAMP: http://localhost:8888/phpMyAdmin/
-   - XAMPP: http://localhost/phpMyAdmin/
-
-2. **Select 'staff' database** from left sidebar
-
-3. **Click 'Export' tab**
-
-4. **Export Method:**
-   - Select "Custom"
-   - Check all tables
-   - Format: SQL
-
-5. **Options:**
-   - ✅ Structure: DROP TABLE, CREATE TABLE
-   - ✅ Data: INSERT statements
-   - ✅ Add CREATE DATABASE statement
-
-6. **Click 'Go'** to download `staff.sql`
-
-### Using Command Line (Advanced)
-
-```bash
-# Export database structure and data
-mysqldump -u root -p staff > staff_database.sql
-
-# For MAMP on Mac
-/Applications/MAMP/Library/bin/mysqldump -u root -proot staff > staff_database.sql
-```
-
----
-
-## 📦 Submission Checklist for Assignment 2
-
-### Required Files (11 files + 2 images)
-
-#### PHP Files (9 files)
-- [ ] `connect.php` - Database connection
-- [ ] `header.php` - Navigation menu
-- [ ] `add_group.php` - Add group form
-- [ ] `group.php` - Display/insert groups
-- [ ] `edit_group.php` - Edit group
-- [ ] `add_user.php` - Add user form
-- [ ] `user.php` - Display/insert users
-- [ ] `edit_user.php` - Edit user
-- [ ] `delinfo.php` - Delete handler
-
-#### Supporting Files
-- [ ] `default.css` - Styling
-- [ ] `staff_database.sql` - Database structure
-- [ ] `images/Modify.png` - Edit icon
-- [ ] `images/Delete.png` - Delete icon
-
-### Pre-Submission Tests
-
-#### Database
-- [ ] All 4 tables created
-- [ ] TITLE has 5 records
-- [ ] GENDER has 3 records
-- [ ] Foreign keys properly set
-- [ ] Can export SQL file
-
-#### Add Group
-- [ ] Form displays
-- [ ] Can submit
-- [ ] Saves to database
-- [ ] Shows in group.php
-
-#### Group Management
-- [ ] Lists all groups
-- [ ] Edit button works
-- [ ] Can update group
-- [ ] Delete button works
-- [ ] Count displays
-
-#### Add User
-- [ ] Form displays
-- [ ] Title dropdown works
-- [ ] Gender radios work
-- [ ] User group dropdown works
-- [ ] Can submit
-- [ ] Saves to database
-
-#### User Management
-- [ ] Lists all users with JOIN
-- [ ] Shows title + name + gender format
-- [ ] Disabled checkbox displays
-- [ ] Edit button works
-- [ ] Can update user
-- [ ] Delete button works
-- [ ] Count displays
-
-#### Navigation
-- [ ] All menu links work
-- [ ] Header displays on all pages
-- [ ] Styling consistent
-
-### File Naming
-
-ZIP file must be named: `Assignment12_XXX.zip`
-- Replace XXX with last 3 digits of your student ID
-- Example: `Assignment12_123.zip` for ID ending in 123
-
-### Create ZIP File on Mac
-
-**Option 1: Using Finder**
-```
-1. Select all files and folders
-2. Right-click → Compress
-3. Rename to Assignment12_XXX.zip
-```
-
-**Option 2: Using Terminal**
-```bash
-cd ~/path/to/your/assignment
-zip -r Assignment12_XXX.zip *.php *.css *.sql images/
-```
-
-**Verify contents:**
-```bash
-unzip -l Assignment12_XXX.zip
-```
-
----
-
-## 🎓 Learning Objectives Achieved
-
-### Assignment 2 Skills
-
-#### Database Design
-- ✅ Creating normalized tables
-- ✅ Defining primary keys
-- ✅ Defining foreign keys
-- ✅ Setting referential integrity (RESTRICT)
-- ✅ Understanding relationships
-
-#### SQL Queries
-- ✅ CREATE TABLE statements
-- ✅ INSERT statements
-- ✅ SELECT with WHERE
-- ✅ SELECT with JOIN (multiple tables)
-- ✅ UPDATE statements
-- ✅ DELETE statements
-- ✅ COUNT aggregate function
-
-#### PHP Programming
-- ✅ Database connections (MySQLi)
-- ✅ Query execution
-- ✅ Result set handling
-- ✅ POST data processing
-- ✅ GET parameter handling
-- ✅ Escaping user input
-- ✅ Form population
-- ✅ Conditional rendering
-
-#### Web Development
-- ✅ HTML forms
-- ✅ Dropdowns (SELECT)
-- ✅ Radio buttons
-- ✅ Checkboxes
-- ✅ Hidden fields
-- ✅ CSS styling
-- ✅ Navigation menus
-- ✅ Page redirection
-
-#### Application Architecture
-- ✅ Separation of concerns
-- ✅ Code reuse (header.php, connect.php)
-- ✅ RESTful-like URL structure
-- ✅ CRUD operations
-- ✅ Error handling
-
----
-
-## 💡 Additional Tips
-
-### 1. Test Incrementally
-Don't wait until everything is done:
-- Test database creation immediately
-- Test each form as you complete it
-- Test edit before moving to next feature
-
-### 2. Use phpMyAdmin
-Verify data at each step:
-- Check if INSERT worked
-- See actual table contents
-- Debug JOIN queries
-
-### 3. Debug with echo
-```php
-// Debug POST data
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
-
-// Debug query
-echo $q; // See the actual SQL query
-
-// Debug result
-var_dump($result);
-```
-
-### 4. Keep Backups
-```bash
-# Backup before major changes
-cp file.php file.php.backup
-```
-
-### 5. Code Comments
-```php
-// Good comments explain WHY
-// Extract data - prevents SQL injection
-$firstname = $mysqli->real_escape_string($_POST['firstname']);
-
-// Bad comments explain WHAT (obvious from code)
-// Set firstname to POST firstname
-$firstname = $_POST['firstname'];
-```
-
----
-
-## 🌟 Extension Ideas (Optional)
-
-Want to go beyond the assignment?
-
-### 1. Search Functionality
-Add search box to filter users by name
-
-### 2. Pagination
-Display 10 users per page with Next/Previous
-
-### 3. Validation
-- Check email format
-- Ensure passwords match
-- Require all fields
-
-### 4. Ajax
-Update without page reload
-
-### 5. Authentication
-Add login system with sessions
-
-### 6. Export to CSV
-Download user list as CSV file
-
-### 7. Image Upload
-Add profile pictures for users
-
-**Note:** These are NOT required for the assignment!
-
----
-
-## ❓ FAQ for Assignment 2
-
-### Q1: Do I need to create sample data?
-**A:** Yes, create at least:
-- 1 user group (from add_group.php)
-- 1 user (from add_user.php)
-
-### Q2: What if I can't create images?
-**A:** You can:
-- Use emoji: ✏️ 🗑️
-- Use text: [Edit] [Delete]
-- Download free icons online
-
-### Q3: Can I modify the CSS?
-**A:** Minor changes are OK, but maintain the general pink theme and layout.
-
-### Q4: Do I need to validate passwords match?
-**A:** Not required for this assignment, but good practice.
-
-### Q5: Should I hash passwords?
-**A:** Not required for this assignment (plain text is OK).
-
-### Q6: What about SQL injection?
-**A:** Use `real_escape_string()` as shown - that's sufficient for this assignment.
-
-### Q7: Can I use PDO instead of MySQLi?
-**A:** Stick with MySQLi since that's what's taught in the course.
-
-### Q8: Do edit forms need validation?
-**A:** Not required, but good to have.
-
-### Q9: What if deleting fails due to foreign key?
-**A:** That's expected behavior - the RESTRICT constraint is working!
-
-### Q10: Can I use different table/column names?
-**A:** No, follow the exact specifications in the assignment for grading compatibility.
-
----
-
-## 🎯 Grading Breakdown (8 marks total)
-
-| Task | Description | Marks |
-|------|-------------|-------|
-| 1 | Create USER and USERGROUP tables | 1 |
-| 2 | Create TITLE and GENDER tables with data | 1 |
-| 3 | Create foreign key constraints (RESTRICT) | 1 |
-| 4 | Complete add_group → group.php (insert & display) | 1 |
-| 5 | Complete add_user → user.php (insert & display) | 1 |
-| 6 | Implement user deletion | 1 |
-| 7 | Implement group deletion | 1 |
-| 8 | Implement edit functionality (user & group) | 1 |
-
----
-
-## 🎉 Final Checklist Before Submission
-
-- [ ] Database created with all tables
-- [ ] Foreign keys working
-- [ ] Can add groups
-- [ ] Can view groups
-- [ ] Can edit groups
-- [ ] Can delete groups
-- [ ] Can add users
-- [ ] Can view users
-- [ ] Can edit users
-- [ ] Can delete users
-- [ ] All forms work
-- [ ] All dropdowns populate
-- [ ] JOIN query works
-- [ ] Counts display correctly
-- [ ] No PHP errors
-- [ ] No SQL errors
-- [ ] SQL file exported
-- [ ] All files included
-- [ ] ZIP file properly named
-- [ ] Tested on clean database
-
----
-
-**Congratulations on completing Lab Assignment 12!** 🚀
-
-You've built a complete CRUD application with:
-- Database design with relationships
-- User interface with forms
-- Full create, read, update, delete operations
-- Proper data validation and escaping
-
-This is a foundational skill for web development!
-
----
-
-**End of Lab 12 Complete Assignment Guide**
 
