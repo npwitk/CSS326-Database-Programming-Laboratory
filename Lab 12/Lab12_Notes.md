@@ -88,13 +88,20 @@ if(isset($_POST['submit'])) {
 
 ### Connection Flow Diagram
 
-1. **Start**
-2. **Create Connection for Needed Database**
-3. **Send Needed SQL commands** (loop if more commands)
-4. **Receiving Data and Processing Results**
-5. **More command?** (Yes → back to step 3, No → continue)
-6. **Closing Connection**
-7. **END**
+```mermaid
+flowchart TD
+    A([Start]) --> B[Create Connection for Needed Database]
+    B --> C[Send Needed SQL commands]
+    C --> D[Receiving Data and Processing Results]
+    D --> E{More command?}
+    E -->|Yes| C
+    E -->|No| F[Closing Connection]
+    F --> G([END])
+    
+    style A fill:#90EE90
+    style G fill:#FFB6C1
+    style E fill:#FFE4B5
+```
 
 ### Creating a Connection
 
