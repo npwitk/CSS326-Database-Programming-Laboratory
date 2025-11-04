@@ -1,5 +1,5 @@
 <?php
-require_once('connect_1.php');
+require_once('Connection.php');
 $p_id = $_POST['p_id'];
 $p_name = $_POST['p_name'];
 $p_price = $_POST['p_price'];

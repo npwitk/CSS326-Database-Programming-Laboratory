@@ -56,7 +56,7 @@ This repository is organized by lab sessions, with each folder containing exerci
 - Password hashing (SHA2)
 - Authentication and authorization
 
-### **Web Development** (Labs 09, 11)
+### **Web Development** (Labs 09, 11-12)
 - Web application architecture
 - Client-server model
 - HTML5 structure and semantics
@@ -65,7 +65,15 @@ This repository is organized by lab sessions, with each folder containing exerci
 - PHP syntax and fundamentals
 - Server-side processing
 - Form handling (GET/POST methods)
-- PHP-MySQL integration
+- File-based database operations
+- PHP file operations (fopen, fwrite, fgets, feof)
+- PHP-MySQL integration with MySQLi
+- Database CRUD operations via PHP
+- Dynamic data retrieval and display
+- Query result processing and formatting
+- SQL injection prevention (real_escape_string)
+- Multi-table JOIN operations in PHP
+- Foreign key constraints and referential integrity
 - Session management
 - Dynamic content generation
 - User authentication systems

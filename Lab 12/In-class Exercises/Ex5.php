@@ -1,16 +1,19 @@
 <?php
-require_once('Connection.php'); // conncetion to local mysql
+$mysqli = new mysqli('localhost', 'testuser', 'password', 'lab12_inclass');
+if($mysqli->connect_errno) {
+    echo $mysqli->connect_errno.": ".$mysqli->connect_error;
+}
+
 $q = "SELECT * FROM product";
 if($result = $mysqli->query($q)) {
     echo '<table border="1">';
-    echo '<tr><th>ID</th><th>Name</th><th>Price</th><th>Edit</th></tr>';
+    echo '<tr><th>Name</th><th>Price</th><th>Delete</th></tr>';
     
     while($row = $result->fetch_array()) {
         echo "<tr>";
-        echo "<td>".$row['p_id']."</td>";
         echo "<td>".$row['p_name']."</td>";
         echo "<td>".$row['p_price']."</td>";
-        echo "<td><a href='Ex6_edit.php?id=".$row['p_id']."'> Edit</a></td>";
+        echo "<td><a href='delinfo.php?id=".$row['p_id']."'> Delete</a></td>";
         echo "</tr>";
     }
     
