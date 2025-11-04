@@ -870,22 +870,22 @@ header("Location: practice_3.php");
 ## Key Takeaways
 
 ### Security Best Practices
-- ✅ Always use `real_escape_string()` to prevent SQL injection
-- ✅ Validate and sanitize all user inputs
-- ✅ Check for connection errors before executing queries
-- ✅ Use prepared statements for better security (consider using PDO)
+- Always use `real_escape_string()` to prevent SQL injection
+- Validate and sanitize all user inputs
+- Check for connection errors before executing queries
+- Use prepared statements for better security (consider using PDO)
 
 ### Connection Management
-- ✅ Always close database connections with `close()`
-- ✅ Check `connect_errno` after creating connection
-- ✅ Handle errors gracefully with proper error messages
+- Always close database connections with `close()`
+- Check `connect_errno` after creating connection
+- Handle errors gracefully with proper error messages
 
 ### Query Execution
-- ✅ Check if query succeeded before processing results
-- ✅ Free result sets with `free()` when done
-- ✅ Use `num_rows` to get row count
-- ✅ Use `field_count` to get column count
-- ✅ Use `insert_id` to get last inserted ID
+- Check if query succeeded before processing results
+- Free result sets with `free()` when done
+- Use `num_rows` to get row count
+- Use `field_count` to get column count
+- Use `insert_id` to get last inserted ID
 
 ### Common mysqli Methods
 
